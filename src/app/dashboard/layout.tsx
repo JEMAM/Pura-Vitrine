@@ -89,13 +89,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }`}
       >
         <div className="flex flex-col gap-5">
-          {/* Brand Header: Logo ampliado para excelente legibilidade de 'Pura Vitrine' e 'MARKETING PARA SALÕES' */}
-          <div className="relative flex items-center justify-center w-full px-2 pt-2 pb-1">
+          {/* Brand Header: Logo ampliado em 20% para excelente legibilidade */}
+          <div className="relative flex items-center justify-center w-full px-1 pt-2 pb-2">
             <Link href="/dashboard" className="flex items-center justify-center w-full">
               <img
                 src="/logo.png"
                 alt="Pura Vitrine - Marketing para Salões"
-                className="w-full max-w-[260px] h-auto max-h-36 object-contain transition-transform hover:scale-105"
+                className="w-full max-w-[312px] h-auto max-h-[175px] object-contain transition-transform hover:scale-105"
               />
             </Link>
             {/* Mobile close button */}
@@ -107,59 +107,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               <span className="material-symbols-outlined text-xl">close</span>
             </button>
-          </div>
-
-          {/* Branch Switcher Card */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setBranchDropdownOpen(!branchDropdownOpen)}
-              className="bg-surface-container-low hover:bg-surface-container-high/60 transition-colors rounded-xl px-space-sm py-2.5 flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] w-full text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-space-xs">
-                <span className="material-symbols-outlined text-primary text-base group-hover:scale-105 transition-transform">
-                  storefront
-                </span>
-                <div className="flex flex-col">
-                  <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">
-                    Filial Ativa
-                  </span>
-                  <span className="font-title-md text-title-md text-on-surface font-semibold truncate">
-                    {activeBranch}
-                  </span>
-                </div>
-              </div>
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">unfold_more</span>
-            </button>
-
-            {branchDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-lg p-1.5 z-30 flex flex-col gap-1">
-                {[
-                  'Barão Geraldo • Campinas',
-                  'Cambuí • Campinas',
-                  'Nova Campinas • Matriz',
-                ].map((branch) => (
-                  <button
-                    key={branch}
-                    type="button"
-                    onClick={() => {
-                      setActiveBranch(branch);
-                      setBranchDropdownOpen(false);
-                    }}
-                    className={`text-left px-3 py-2 rounded-lg text-body-sm transition-colors flex items-center justify-between ${
-                      activeBranch === branch
-                        ? 'bg-primary-container/30 text-primary font-semibold'
-                        : 'text-on-surface hover:bg-surface-container-low'
-                    }`}
-                  >
-                    <span>{branch}</span>
-                    {activeBranch === branch && (
-                      <span className="material-symbols-outlined text-sm text-primary">check</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Navigation Links */}
@@ -271,7 +218,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <img
                     src="/logo.png"
                     alt="Pura Vitrine"
-                    className="h-11 w-auto object-contain"
+                    className="h-[53px] w-auto object-contain"
                   />
                 </Link>
               </div>
