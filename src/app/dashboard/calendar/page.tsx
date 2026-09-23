@@ -39,6 +39,7 @@ export default function CalendarPage() {
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     fetch('/api/posts')
@@ -135,6 +136,20 @@ export default function CalendarPage() {
       .sort((a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime());
   }, [posts]);
 
+  const selectedDayPosts = useMemo(() => {
+    if (!selectedDate) return [];
+    return getPostsForDate(selectedDate);
+  }, [selectedDate, posts]);
+
+  const formatSelectedDateFull = (d: Date) => {
+    const weekday = d.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const day = d.getDate();
+    const monthName = monthNames[d.getMonth()];
+    const fullYear = d.getFullYear();
+    return `${capitalizedWeekday}, ${day} de ${monthName} de ${fullYear}`;
+  };
+
   return (
     <div className="calendar-page max-w-[1360px] mx-auto w-full px-4 lg:px-8">
       {/* Page Header */}
@@ -206,48 +221,58 @@ export default function CalendarPage() {
               const isToday =
                 item.date.toDateString() === new Date().toDateString();
               const isOtherMonth = item.monthOffset !== 0;
+              const isSelected =
+                selectedDate &&
+                item.date.toDateString() === selectedDate.toDateString();
 
               return (
                 <div
                   key={idx}
+                  onClick={() => setSelectedDate(item.date)}
                   className={`calendar-day-cell ${isOtherMonth ? 'other-month' : ''} ${
                     isToday ? 'today-cell' : ''
-                  }`}
+                  } ${isSelected ? 'selected-day-cell' : ''}`}
+                  title={`${item.day} de ${monthNames[item.date.getMonth()]} - ${
+                    dayPosts.length === 0
+                      ? 'Nenhum post agendado'
+                      : `${dayPosts.length} publicação(ões)`
+                  } (Clique para abrir)`}
                 >
                   <div className="cell-header">
                     <span className={`day-number ${isToday ? 'today-badge' : ''}`}>
                       {item.day}
                     </span>
                     {dayPosts.length > 0 && (
-                      <span className="post-count-dot">{dayPosts.length}</span>
+                      <span className="post-count-badge">
+                        {dayPosts.length}
+                      </span>
                     )}
                   </div>
 
-                  <div className="cell-posts-container">
-                    {dayPosts.map((post) => (
-                      <div
-                        key={post.id}
-                        className={`cell-post-pill ${
-                          post.status === 'PUBLISHED'
-                            ? 'pill-published'
-                            : post.status === 'SCHEDULED'
-                            ? 'pill-scheduled'
-                            : 'pill-draft'
-                        }`}
-                        onClick={() => setSelectedPost(post)}
-                      >
-                        <span className="pill-platform">
-                          {post.platform === 'INSTAGRAM' ? (
-                            <Instagram size={10} />
-                          ) : post.platform === 'FACEBOOK' ? (
-                            <Facebook size={10} />
-                          ) : (
-                            'IG/FB'
-                          )}
-                        </span>
-                        <span className="pill-caption truncate">{post.caption}</span>
+                  {/* Indicador compacto sem esticar o dia */}
+                  <div className="cell-indicator-row">
+                    {dayPosts.length > 0 ? (
+                      <div className="day-dots-group">
+                        {dayPosts.slice(0, 3).map((post) => (
+                          <span
+                            key={post.id}
+                            className={`day-dot ${
+                              post.status === 'PUBLISHED'
+                                ? 'dot-published'
+                                : post.status === 'SCHEDULED'
+                                ? 'dot-scheduled'
+                                : 'dot-draft'
+                            }`}
+                            title={`${post.status}: ${post.caption.slice(0, 40)}...`}
+                          />
+                        ))}
+                        {dayPosts.length > 3 && (
+                          <span className="dot-overflow">+{dayPosts.length - 3}</span>
+                        )}
                       </div>
-                    ))}
+                    ) : (
+                      <span className="empty-day-hint" />
+                    )}
                   </div>
                 </div>
               );
@@ -255,15 +280,69 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* Sidebar: Upcoming Schedule */}
+        {/* Sidebar: Upcoming Schedule or Selected Day */}
         <div className="card calendar-sidebar">
-          <div className="sidebar-title-row">
-            <Clock size={18} className="text-primary" />
-            <h3>Próximos Agendamentos</h3>
+          <div className="sidebar-title-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {selectedDate ? (
+                <CalendarDays size={18} className="text-primary" />
+              ) : (
+                <Clock size={18} className="text-primary" />
+              )}
+              <h3>
+                {selectedDate
+                  ? `${selectedDate.getDate()} de ${monthNames[selectedDate.getMonth()]}`
+                  : 'Próximos Agendamentos'}
+              </h3>
+            </div>
+            {selectedDate && (
+              <button
+                type="button"
+                onClick={() => setSelectedDate(null)}
+                style={{ fontSize: '0.75rem', color: 'var(--color-primary)', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: '600' }}
+              >
+                Limpar
+              </button>
+            )}
           </div>
 
           <div className="upcoming-list">
-            {upcomingScheduled.length === 0 ? (
+            {selectedDate ? (
+              selectedDayPosts.length === 0 ? (
+                <div className="empty-upcoming">
+                  <p>Nenhum post agendado para {selectedDate.getDate()} de {monthNames[selectedDate.getMonth()]}.</p>
+                  <Link href="/dashboard/posts" className="btn btn-sm btn-primary">
+                    <Plus size={14} /> Agendar neste dia
+                  </Link>
+                </div>
+              ) : (
+                selectedDayPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="card upcoming-item card-interactive"
+                    onClick={() => setSelectedPost(post)}
+                  >
+                    <div className="upcoming-time-tag">
+                      <Clock size={12} />
+                      <span>
+                        {post.scheduledAt
+                          ? formatDate(post.scheduledAt)
+                          : post.publishedAt
+                          ? formatDate(post.publishedAt)
+                          : 'Rascunho'}
+                      </span>
+                    </div>
+                    <p className="upcoming-caption truncate">{post.caption}</p>
+                    <div className="upcoming-badges">
+                      <span className="badge badge-primary">
+                        {post.platform === 'INSTAGRAM' ? 'Instagram' : 'Instagram & FB'}
+                      </span>
+                      <span className="badge badge-neutral">{post.postType}</span>
+                    </div>
+                  </div>
+                ))
+              )
+            ) : upcomingScheduled.length === 0 ? (
               <div className="empty-upcoming">
                 <p>Nenhum post agendado para os próximos dias.</p>
                 <Link href="/dashboard/posts" className="btn btn-sm btn-primary">
@@ -294,6 +373,169 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal da Data Específica Selecionada */}
+      {selectedDate && (
+        <>
+          <div className="overlay" onClick={() => setSelectedDate(null)} />
+          <div className="modal date-detail-modal" style={{ width: 'min(92vw, 560px)', maxHeight: '90vh' }}>
+            <div className="modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(199, 142, 60, 0.12)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <CalendarDays size={18} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>
+                    {formatSelectedDateFull(selectedDate)}
+                  </h3>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>
+                    {selectedDayPosts.length === 0
+                      ? 'Nenhuma publicação neste dia'
+                      : `${selectedDayPosts.length} publicação(ões) registrada(s)`}
+                  </span>
+                </div>
+              </div>
+              <button
+                className="btn btn-ghost btn-icon"
+                onClick={() => setSelectedDate(null)}
+                aria-label="Fechar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', maxHeight: '60vh', overflowY: 'auto', padding: 'var(--space-4)' }}>
+              {selectedDayPosts.length === 0 ? (
+                <div style={{ padding: 'var(--space-6) var(--space-4)', borderRadius: 'var(--radius-lg)', background: 'var(--color-bg)', border: '1px dashed var(--color-border)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'var(--color-bg-secondary)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem' }}>
+                    📅
+                  </div>
+                  <div>
+                    <h4 style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--color-text)', margin: '0 0 4px 0' }}>
+                      Nenhum post agendado para esta data
+                    </h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', margin: 0, maxWidth: '340px', lineHeight: '1.4' }}>
+                      Mantenha a frequência do seu salão ativa aproveitando esta data para programar novos conteúdos.
+                    </p>
+                  </div>
+                  <Link
+                    href="/dashboard/posts"
+                    className="btn btn-primary btn-sm"
+                    style={{ marginTop: '4px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    onClick={() => setSelectedDate(null)}
+                  >
+                    <Plus size={14} />
+                    <span>Agendar Post para este dia</span>
+                  </Link>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {selectedDayPosts.map((post) => (
+                    <div
+                      key={post.id}
+                      style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border-light)', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span
+                            className={`badge ${
+                              post.status === 'PUBLISHED'
+                                ? 'badge-success'
+                                : post.status === 'SCHEDULED'
+                                ? 'badge-primary'
+                                : 'badge-neutral'
+                            }`}
+                          >
+                            {post.status === 'PUBLISHED'
+                              ? 'Publicado'
+                              : post.status === 'SCHEDULED'
+                              ? 'Agendado'
+                              : 'Rascunho'}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            {post.platform === 'INSTAGRAM' ? (
+                              <Instagram size={12} className="text-pink-600" />
+                            ) : post.platform === 'FACEBOOK' ? (
+                              <Facebook size={12} className="text-blue-600" />
+                            ) : (
+                              'IG & FB'
+                            )}
+                            &bull; {post.postType}
+                          </span>
+                        </div>
+
+                        <div style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Clock size={12} />
+                          <span>
+                            {post.scheduledAt
+                              ? new Date(post.scheduledAt).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })
+                              : post.publishedAt
+                              ? new Date(post.publishedAt).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })
+                              : '--:--'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-text)', margin: 0, whiteSpace: 'pre-wrap', lineHeight: '1.4', maxHeight: '4.2em', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {post.caption}
+                      </p>
+
+                      <div style={{ paddingTop: '8px', borderTop: '1px solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--color-text-tertiary)' }}>
+                          ID: #{post.id.slice(0, 8)}
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-ghost"
+                            onClick={() => setSelectedPost(post)}
+                            style={{ fontSize: '0.75rem', padding: '4px 8px' }}
+                          >
+                            Ver Detalhes
+                          </button>
+                          <Link
+                            href="/dashboard/posts"
+                            className="btn btn-sm btn-primary"
+                            onClick={() => setSelectedDate(null)}
+                            style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+                          >
+                            Abrir no Editor
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--color-border-light)' }}>
+              <button
+                type="button"
+                className="btn btn-sm btn-ghost"
+                onClick={() => setSelectedDate(null)}
+              >
+                Fechar
+              </button>
+              <Link
+                href="/dashboard/posts"
+                className="btn btn-sm btn-primary"
+                onClick={() => setSelectedDate(null)}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                <Plus size={14} />
+                <span>+ Agendar Novo Post</span>
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Post Detail Modal */}
       {selectedPost && (
@@ -431,25 +673,36 @@ export default function CalendarPage() {
 
         .calendar-day-cell {
           background: #ffffff;
-          min-height: 90px;
-          padding: var(--space-2);
+          height: 68px;
+          min-height: 68px;
+          max-height: 68px;
+          padding: 6px 8px;
           display: flex;
           flex-direction: column;
-          gap: 4px;
-          transition: background var(--transition-fast);
+          justify-content: space-between;
+          cursor: pointer;
+          transition: all var(--transition-fast);
+          user-select: none;
+          position: relative;
         }
 
         .calendar-day-cell:hover {
-          background: var(--color-surface-hover);
+          background: var(--color-surface-hover, #fafafa);
+          box-shadow: inset 0 0 0 1px var(--color-primary);
+        }
+
+        .calendar-day-cell.selected-day-cell {
+          background: var(--color-primary-50, #fcf7f0);
+          box-shadow: inset 0 0 0 2px var(--color-primary);
         }
 
         .calendar-day-cell.other-month {
           background: var(--color-bg);
-          opacity: 0.5;
+          opacity: 0.4;
         }
 
         .calendar-day-cell.today-cell {
-          background: var(--color-primary-50);
+          background: rgba(199, 142, 60, 0.05);
         }
 
         .cell-header {
@@ -473,61 +726,63 @@ export default function CalendarPage() {
           display: flex;
           align-items: center;
           justify-content: center;
+          font-weight: 700;
         }
 
-        .post-count-dot {
-          background: var(--color-accent);
-          color: white;
+        .post-count-badge {
           font-size: 0.65rem;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
+          font-weight: 700;
+          color: var(--color-primary);
+          background: rgba(199, 142, 60, 0.12);
+          padding: 1px 6px;
+          border-radius: 9999px;
+        }
+
+        .cell-indicator-row {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
+          min-height: 12px;
         }
 
-        .cell-posts-container {
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-          overflow: hidden;
-        }
-
-        .cell-post-pill {
+        .day-dots-group {
           display: flex;
           align-items: center;
           gap: 4px;
-          padding: 2px 6px;
-          border-radius: var(--radius-sm);
-          font-size: 0.7rem;
-          cursor: pointer;
-          transition: transform var(--transition-fast);
         }
 
-        .cell-post-pill:hover {
-          transform: translateY(-1px);
+        .day-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          display: inline-block;
         }
 
-        .pill-published {
-          background: #edf7f1;
-          color: #276749;
-          border-left: 2px solid var(--color-success);
+        .dot-published {
+          background: #10b981;
         }
 
-        .pill-scheduled {
-          background: var(--color-primary-50);
-          color: var(--color-primary-dark);
-          border-left: 2px solid var(--color-primary);
+        .dot-scheduled {
+          background: #3b82f6;
         }
 
-        .pill-draft {
-          background: var(--color-bg-secondary);
-          color: var(--color-text-secondary);
+        .dot-draft {
+          background: #9ca3af;
         }
 
-        .pill-caption {
-          font-weight: 500;
+        .dot-overflow {
+          font-size: 0.65rem;
+          font-weight: 700;
+          color: var(--color-primary);
+          margin-left: 2px;
+        }
+
+        @media (max-width: 640px) {
+          .calendar-day-cell {
+            height: 52px;
+            min-height: 52px;
+            padding: 4px;
+          }
         }
 
         /* Sidebar */
