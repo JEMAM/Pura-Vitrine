@@ -10,10 +10,22 @@ interface FaqItem {
 }
 
 export default function GuiaPage() {
-  const [activeTab, setActiveTab] = useState<'inicio' | 'dashboard' | 'editor' | 'dicas' | 'faq'>('inicio');
+  const [activeTab, setActiveTab] = useState<'inicio' | 'dashboard' | 'editor' | 'trends' | 'dicas' | 'faq'>('inicio');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const faqs: FaqItem[] = [
+    {
+      category: 'TikTok & Tendências',
+      question: 'Como o TikTok Creative Center ajuda a atrair mais clientes para o salão?',
+      answer:
+        'O TikTok é a principal plataforma onde nascem as maiores tendências de beleza (#hairtok). Monitorando hashtags como #acidificacaocapilar, #morenailuminada e cortes em camadas em tempo real no Brasil, seu salão publica exatamente o que as clientes estão procurando, aumentando o alcance orgânico dos Reels e o desejo de agendamento.',
+    },
+    {
+      category: 'Vídeos Curtos & Ganchos',
+      question: 'O que é o Gancho Viral de 3 segundos (Hook) e por que ele é indispensável?',
+      answer:
+        'Mais de 70% das pessoas decidem se continuam assistindo ou rolam o feed nos primeiros 3 segundos de um vídeo. O gancho inicial (ex: "Se o seu cabelo tá poroso, você precisa desse procedimento urgente!") prende a atenção da cliente antes que ela mude de vídeo, multiplicando a taxa de retenção e entrega do algoritmo.',
+    },
     {
       category: 'IA & Conteúdo',
       question: 'Como a BelezaIA (Google Gemini) cria as legendas?',
@@ -100,6 +112,7 @@ export default function GuiaPage() {
             { id: 'inicio', label: 'Passo a Passo Rápido', icon: 'rocket_launch' },
             { id: 'dashboard', label: 'Dashboard & Métricas', icon: 'insights' },
             { id: 'editor', label: 'Editor Inteligente & IA', icon: 'auto_awesome' },
+            { id: 'trends', label: 'Tendências TikTok & Reels', icon: 'local_fire_department' },
             { id: 'dicas', label: 'Dicas de Fotografia & Salão', icon: 'photo_camera' },
             { id: 'faq', label: 'Perguntas Frequentes (FAQ)', icon: 'help_outline' },
           ].map((tab) => (
@@ -316,6 +329,80 @@ export default function GuiaPage() {
                     sua inclusão na legenda e vê-la refletida automaticamente na tela do iPhone de teste.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Tendências TikTok & Reels */}
+        {activeTab === 'trends' && (
+          <div className="flex flex-col gap-space-md">
+            <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-space-sm">
+              <div className="flex items-center gap-2">
+                <span className="p-2 rounded-xl bg-rose-500/10 text-rose-500 material-symbols-outlined text-2xl">
+                  local_fire_department
+                </span>
+                <div>
+                  <h2 className="font-headline-sm text-headline-sm text-on-surface">
+                    TikTok Creative Center &amp; Tendências de Beleza
+                  </h2>
+                  <p className="font-body-md text-body-md text-on-surface-variant">
+                    Como aproveitar as maiores tendências de cabelos e cosméticos do Brasil para lotar a agenda do salão
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <div className="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2 border border-outline-variant/15">
+                  <span className="font-title-md text-title-md text-rose-600 font-bold flex items-center gap-2">
+                    <span className="material-symbols-outlined">trending_up</span>
+                    1. Monitoramento em Tempo Real
+                  </span>
+                  <p className="text-body-sm text-on-surface-variant leading-relaxed">
+                    Nossa central monitora continuamente o volume de buscas no Brasil para procedimentos como <strong>Acidificação Capilar</strong>, <strong>Morena Iluminada Mel</strong> e <strong>Corte Butterfly</strong>, apontando o que está em alta no momento.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2 border border-outline-variant/15">
+                  <span className="font-title-md text-title-md text-primary font-bold flex items-center gap-2">
+                    <span className="material-symbols-outlined">timer</span>
+                    2. Ganchos Virais de 3s (Hooks)
+                  </span>
+                  <p className="text-body-sm text-on-surface-variant leading-relaxed">
+                    A primeira frase falada ou escrita na tela define a retenção do vídeo. No painel de tendências, cada procedimento vem acompanhado de um gancho persuasivo já testado para prender a atenção da cliente.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2 border border-outline-variant/15">
+                  <span className="font-title-md text-title-md text-secondary font-bold flex items-center gap-2">
+                    <span className="material-symbols-outlined">movie_edit</span>
+                    3. Roteiros Cronometrados com IA
+                  </span>
+                  <p className="text-body-sm text-on-surface-variant leading-relaxed">
+                    Com 1 clique em <strong>&ldquo;Gerar Roteiro IA&rdquo;</strong>, o Google Gemini divide o seu vídeo em 3 partes: <em>Introdução de impacto (0-3s)</em>, <em>Processo no salão (4-15s)</em> e <em>Revelação brilhante com CTA (16-30s)</em>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-3 p-4 rounded-xl bg-gradient-to-r from-rose-500/10 via-surface-container-low to-amber-500/10 border border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-rose-500 text-2xl">music_note</span>
+                  <div className="flex flex-col">
+                    <span className="font-title-md text-title-md text-on-surface font-semibold text-sm">
+                      Dica de Áudios em Alta para Reels &amp; TikTok:
+                    </span>
+                    <span className="text-body-sm text-on-surface-variant text-xs">
+                      Sempre utilize a trilha sugerida em segundo plano com volume em 30% a 40% e a voz do profissional em 100%. Isso garante a impulsão do áudio viral sem perder a clareza da explicação técnica.
+                    </span>
+                  </div>
+                </div>
+
+                <Link
+                  href="/dashboard/ai"
+                  className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-semibold whitespace-nowrap shadow-sm hover:scale-[1.02] active:scale-95 transition-all shrink-0"
+                >
+                  Abrir Tendências no BelezaIA
+                </Link>
               </div>
             </div>
           </div>

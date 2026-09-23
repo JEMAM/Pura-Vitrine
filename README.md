@@ -12,7 +12,8 @@ Plataforma inteligente de gestão de mídias sociais, geração de copy com inte
 - **Biblioteca de Mídia Inteligente**: Upload de fotos e vídeos com auto-tagging de procedimentos de salão (Mechas, Morena Iluminada, Nail Art, etc.).
 - **Calendário Editorial**: Visão mensal e semanal da grade de publicações com horários de pico.
 - **Métricas & Relatórios**: Análise de eficiência por formato (Reels, Carrossel, Stories), demografia de clientes por bairros e leaderboard de posts mais engajados.
-- **Guia de Utilização Oficial**: Manual interativo com melhores práticas de fotografia para salão e FAQ.
+- **TikTok Creative Center (Tendências de Beleza)**: Monitoramento em tempo real de hashtags virais (#hairtok, acidificação, morena iluminada, corte butterfly), métricas de crescimento, ganchos de 3 segundos (hooks) e gerador de roteiros cronometrados com Google Gemini.
+- **Guia de Utilização Oficial**: Manual interativo com guia passo a passo, boas práticas de fotografia para salão, estratégias de Reels/TikTok e FAQ.
 - **Gerenciador de Chaves de API**: Painel seguro na tela de login para configuração das APIs (.env.local / Vercel).
 
 ---
