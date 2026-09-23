@@ -22,6 +22,12 @@ import {
   Music,
   ArrowRight,
   Sparkle,
+  Eye,
+  Trash2,
+  Heart,
+  MessageCircle,
+  Bookmark,
+  RotateCcw,
 } from 'lucide-react';
 import { TIKTOK_BEAUTY_TRENDS, TikTokTrend } from '@/lib/tiktok-trends';
 
@@ -78,6 +84,8 @@ export default function AIPage() {
   const [selectedTrendCategory, setSelectedTrendCategory] = useState<string>('all');
   const [searchTrend, setSearchTrend] = useState<string>('');
   const [activeTrendModal, setActiveTrendModal] = useState<TikTokTrend | null>(null);
+  const [previewingTrend, setPreviewingTrend] = useState<TikTokTrend | null>(null);
+  const [hiddenTrendIds, setHiddenTrendIds] = useState<string[]>([]);
   const [generatingTrendScript, setGeneratingTrendScript] = useState(false);
   const [trendScriptResult, setTrendScriptResult] = useState<any>(null);
   const [copiedScript, setCopiedScript] = useState(false);
@@ -242,7 +250,20 @@ export default function AIPage() {
     router.push(`/dashboard/posts?prompt=${encodeURIComponent(trend.name + ' - ' + trend.suggestedHook)}&mode=ai`);
   };
 
+  const handleHideTrend = (trendId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setHiddenTrendIds((prev) => [...prev, trendId]);
+    if (previewingTrend?.id === trendId) {
+      setPreviewingTrend(null);
+    }
+  };
+
+  const handleRestoreHiddenTrends = () => {
+    setHiddenTrendIds([]);
+  };
+
   const filteredTrends = TIKTOK_BEAUTY_TRENDS.filter((t) => {
+    if (hiddenTrendIds.includes(t.id)) return false;
     const matchesCategory = selectedTrendCategory === 'all' || t.category === selectedTrendCategory;
     const matchesSearch =
       !searchTrend ||
@@ -678,13 +699,26 @@ export default function AIPage() {
               ))}
             </div>
 
-            <input
-              type="text"
-              placeholder="Buscar tendência ou hashtag..."
-              value={searchTrend}
-              onChange={(e) => setSearchTrend(e.target.value)}
-              className="px-3.5 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary w-full sm:w-64"
-            />
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+              {hiddenTrendIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleRestoreHiddenTrends}
+                  className="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-primary text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm"
+                >
+                  <RotateCcw size={13} />
+                  <span>Restaurar ({hiddenTrendIds.length})</span>
+                </button>
+              )}
+
+              <input
+                type="text"
+                placeholder="Buscar tendência ou hashtag..."
+                value={searchTrend}
+                onChange={(e) => setSearchTrend(e.target.value)}
+                className="px-3.5 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary w-full sm:w-64"
+              />
+            </div>
           </div>
 
           {/* Trends Grid */}
@@ -692,24 +726,36 @@ export default function AIPage() {
             {filteredTrends.map((trend) => (
               <div
                 key={trend.id}
-                className="p-5 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"
+                onClick={() => setPreviewingTrend(trend)}
+                className="p-5 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-md hover:border-primary/40 transition-all flex flex-col justify-between gap-4 group cursor-pointer"
               >
                 <div className="flex flex-col gap-3">
-                  {/* Top badges */}
+                  {/* Top badges & delete/hide button */}
                   <div className="flex items-center justify-between">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${trend.badgeColor}`}>
                       {trend.badge} • {trend.growth}
                     </span>
-                    <span className="text-xs font-medium text-on-surface-variant flex items-center gap-1">
-                      <TrendingUp size={13} className="text-emerald-500" />
-                      {trend.views}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+                        <TrendingUp size={13} className="text-emerald-500" />
+                        {trend.views}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => handleHideTrend(trend.id, e)}
+                        title="Deletar / Ocultar da lista"
+                        className="p-1 rounded-lg text-on-surface-variant/40 hover:text-error hover:bg-error-container/20 transition-colors"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Title & Hashtag */}
                   <div>
-                    <h3 className="text-base font-bold text-on-surface group-hover:text-primary transition-colors">
-                      {trend.name}
+                    <h3 className="text-base font-bold text-on-surface group-hover:text-primary transition-colors flex items-center justify-between">
+                      <span>{trend.name}</span>
+                      <Eye size={15} className="text-on-surface-variant/40 group-hover:text-primary transition-colors" />
                     </h3>
                     <span className="text-xs font-semibold text-primary">{trend.hashtag}</span>
                   </div>
@@ -731,7 +777,7 @@ export default function AIPage() {
                       📹 {trend.videoFormat}
                     </span>
                     {trend.soundtrackSuggestion && (
-                      <span className="bg-surface-container-highest px-2 py-0.5 rounded-md font-medium truncate max-w-[200px]" title={trend.soundtrackSuggestion}>
+                      <span className="bg-surface-container-highest px-2 py-0.5 rounded-md font-medium truncate max-w-[180px]" title={trend.soundtrackSuggestion}>
                         🎵 {trend.soundtrackSuggestion}
                       </span>
                     )}
@@ -741,32 +787,280 @@ export default function AIPage() {
                 {/* Actions */}
                 <div className="pt-3 border-t border-outline-variant/20 flex items-center gap-2">
                   <button
-                    onClick={() => handleGenerateTrendScript(trend)}
-                    className="flex-1 py-2 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-95 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPreviewingTrend(trend);
+                    }}
+                    className="flex-1 py-2 px-2.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-sm"
                   >
-                    <Wand2 size={14} />
-                    <span>Gerar Roteiro IA</span>
+                    <Eye size={14} className="text-primary" />
+                    <span>Visualizar</span>
                   </button>
                   <button
-                    onClick={() => handleSendTrendToEditor(trend)}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGenerateTrendScript(trend);
+                    }}
+                    title="Gerar Roteiro com IA"
+                    className="py-2 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-95 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <Wand2 size={14} />
+                    <span className="hidden sm:inline">Roteiro IA</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSendTrendToEditor(trend);
+                    }}
                     title="Criar post no editor"
                     className="p-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-colors"
                   >
                     <ArrowRight size={15} />
                   </button>
-                  <a
-                    href={trend.creativeCenterUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Ver no Creative Center Oficial"
-                    className="p-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-colors"
-                  >
-                    <ExternalLink size={15} />
-                  </a>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Interactive TikTok / Reels Visual Preview Modal */}
+          {previewingTrend && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-surface border border-outline-variant/30 rounded-3xl max-w-4xl w-full p-6 shadow-2xl flex flex-col gap-6 relative">
+                {/* Modal Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                  <div className="flex items-center gap-3">
+                    <span className="p-2 rounded-xl bg-rose-500/10 text-rose-500">
+                      <Flame size={20} />
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
+                        <span>{previewingTrend.name}</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${previewingTrend.badgeColor}`}>
+                          {previewingTrend.badge}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-on-surface-variant">
+                        Simulador de Visualização TikTok &amp; Reels • Proporção 9:16
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleHideTrend(previewingTrend.id)}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold text-error hover:bg-error-container/20 flex items-center gap-1.5 transition-colors border border-error/20"
+                      title="Deletar / Ocultar da Lista"
+                    >
+                      <Trash2 size={14} />
+                      <span>Deletar da Lista</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewingTrend(null)}
+                      className="p-1.5 rounded-xl hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface text-lg leading-none"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2-Column Content: Left Smartphone Mockup, Right Strategy Intel */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                  {/* Left: 9:16 TikTok Smartphone Mockup */}
+                  <div className="md:col-span-5 flex justify-center">
+                    <div className="relative w-full max-w-[280px] aspect-[9/16] rounded-[36px] bg-gradient-to-b from-stone-900 via-stone-950 to-black text-white p-3.5 shadow-2xl border-4 border-stone-800 flex flex-col justify-between overflow-hidden select-none">
+                      {/* Dynamic Background visual elements */}
+                      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-rose-900/60 via-purple-950/40 to-transparent pointer-events-none" />
+                      <div className="absolute top-1/4 -right-10 w-40 h-40 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
+
+                      {/* Phone Top Notch & Tabs */}
+                      <div className="relative z-10 flex flex-col gap-2 pt-1">
+                        <div className="mx-auto w-20 h-4 rounded-full bg-black/60 flex items-center justify-center">
+                          <div className="w-2.5 h-2.5 rounded-full bg-stone-700 mr-2" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50" />
+                        </div>
+                        <div className="flex items-center justify-center gap-4 text-xs font-semibold text-white/70">
+                          <span>Seguindo</span>
+                          <span className="text-white border-b-2 border-white pb-0.5 font-bold">Para você</span>
+                        </div>
+                      </div>
+
+                      {/* Center: Viral Hook on screen */}
+                      <div className="relative z-10 my-auto px-2 flex flex-col items-center text-center gap-2">
+                        <div className="p-1 rounded-full bg-rose-500/30 text-rose-300 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 flex items-center gap-1 backdrop-blur-md">
+                          <Flame size={10} />
+                          <span>Gancho Viral de 3s</span>
+                        </div>
+                        <div className="bg-black/70 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 shadow-xl">
+                          <p className="text-sm font-extrabold text-white leading-snug drop-shadow-md">
+                            &ldquo;{previewingTrend.suggestedHook}&rdquo;
+                          </p>
+                        </div>
+                        <span className="text-[10px] text-white/70 font-medium">
+                          ✨ Retenção máxima nos primeiros segundos
+                        </span>
+                      </div>
+
+                      {/* Right-rail actions on TikTok */}
+                      <div className="absolute right-2 bottom-16 z-20 flex flex-col items-center gap-3 text-white/90">
+                        {/* Profile avatar */}
+                        <div className="relative mb-1">
+                          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center font-bold text-xs border border-white">
+                            PV
+                          </div>
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-bold">
+                            +
+                          </div>
+                        </div>
+
+                        {/* Likes */}
+                        <div className="flex flex-col items-center">
+                          <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-rose-500">
+                            <Heart size={18} fill="currentColor" />
+                          </div>
+                          <span className="text-[10px] font-semibold mt-0.5">84.2K</span>
+                        </div>
+
+                        {/* Comments */}
+                        <div className="flex flex-col items-center">
+                          <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white">
+                            <MessageCircle size={18} />
+                          </div>
+                          <span className="text-[10px] font-semibold mt-0.5">1.5K</span>
+                        </div>
+
+                        {/* Bookmark */}
+                        <div className="flex flex-col items-center">
+                          <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-amber-400">
+                            <Bookmark size={18} fill="currentColor" />
+                          </div>
+                          <span className="text-[10px] font-semibold mt-0.5">22.8K</span>
+                        </div>
+
+                        {/* Spinning Record */}
+                        <div className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center animate-spin">
+                          <Music size={12} className="text-white" />
+                        </div>
+                      </div>
+
+                      {/* Bottom Info Bar */}
+                      <div className="relative z-10 flex flex-col gap-1 pr-12 pb-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-white drop-shadow">
+                            @salaobelezapuracampinas
+                          </span>
+                          <span className="material-symbols-outlined text-[13px] text-primary">verified</span>
+                        </div>
+                        <p className="text-[11px] text-white/90 line-clamp-2 leading-tight drop-shadow">
+                          {previewingTrend.description}
+                        </p>
+                        <span className="text-[11px] font-bold text-primary-fixed drop-shadow">
+                          {previewingTrend.hashtag}
+                        </span>
+                        <div className="flex items-center gap-1 text-[10px] text-white/70 mt-0.5 truncate">
+                          <Music size={10} />
+                          <span className="truncate">
+                            {previewingTrend.soundtrackSuggestion || 'Áudio Viral de Beleza • Brasil'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Trend Intelligence & Actions */}
+                  <div className="md:col-span-7 flex flex-col gap-4">
+                    <div className="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/20 flex flex-col gap-3">
+                      <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                        Inteligência de Mercado • TikTok Brasil
+                      </span>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div className="p-3 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
+                          <span className="text-on-surface-variant block mb-0.5">Crescimento:</span>
+                          <span className="text-sm font-bold text-emerald-600">{previewingTrend.growth}</span>
+                        </div>
+                        <div className="p-3 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
+                          <span className="text-on-surface-variant block mb-0.5">Visualizações:</span>
+                          <span className="text-sm font-bold text-on-surface">{previewingTrend.views}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-xs font-bold text-on-surface mb-1">Por que está viralizando:</h4>
+                        <p className="text-xs text-on-surface-variant leading-relaxed">
+                          {previewingTrend.description} Clientes de salão procuram esse procedimento ativamente no TikTok e Instagram Reels no Brasil antes de agendar.
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="text-xs font-bold text-on-surface mb-1">Formato de Gravação Recomendado:</h4>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface font-semibold">
+                            📹 {previewingTrend.videoFormat}
+                          </span>
+                          <span className="text-on-surface-variant">Luz natural ou anel de led suave a 45º</span>
+                        </div>
+                      </div>
+
+                      {previewingTrend.soundtrackSuggestion && (
+                        <div>
+                          <h4 className="text-xs font-bold text-on-surface mb-1">Trilha Sonora Sugerida:</h4>
+                          <p className="text-xs text-on-surface-variant flex items-center gap-1.5">
+                            <Music size={13} className="text-rose-500 shrink-0" />
+                            <span>{previewingTrend.soundtrackSuggestion}</span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const t = previewingTrend;
+                          setPreviewingTrend(null);
+                          handleGenerateTrendScript(t);
+                        }}
+                        className="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-semibold hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-sm"
+                      >
+                        <Wand2 size={16} />
+                        <span>Gerar Roteiro Completo com IA (Gemini)</span>
+                      </button>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const t = previewingTrend;
+                            setPreviewingTrend(null);
+                            handleSendTrendToEditor(t);
+                          }}
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                        >
+                          <ArrowRight size={14} />
+                          <span>Usar no Editor de Post</span>
+                        </button>
+
+                        <a
+                          href={previewingTrend.creativeCenterUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-all flex items-center gap-1.5 border border-outline-variant/20"
+                        >
+                          <span>Ver no TikTok Oficial</span>
+                          <ExternalLink size={13} />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Script Drawer / Modal */}
           {activeTrendModal && (
