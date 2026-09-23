@@ -84,18 +84,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Luxury Sidebar Desktop & Mobile */}
       <aside
-        className={`fixed left-0 top-0 h-full w-72 bg-surface-container-lowest/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-lg px-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-transform duration-300 ${
+        className={`fixed left-0 top-0 h-full w-80 bg-surface-container-lowest/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-lg px-5 shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-transform duration-300 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        <div className="flex flex-col gap-space-lg">
-          {/* Brand Header: Logo doubled in size, centered in sidebar without separate salon name text */}
+        <div className="flex flex-col gap-5">
+          {/* Brand Header: Logo ampliado para excelente legibilidade de 'Pura Vitrine' e 'MARKETING PARA SALÕES' */}
           <div className="relative flex items-center justify-center w-full px-2 pt-2 pb-1">
             <Link href="/dashboard" className="flex items-center justify-center w-full">
               <img
                 src="/logo.png"
                 alt="Pura Vitrine - Marketing para Salões"
-                className="h-32 w-auto max-w-[240px] object-contain transition-transform hover:scale-105"
+                className="w-full max-w-[260px] h-auto max-h-36 object-contain transition-transform hover:scale-105"
               />
             </Link>
             {/* Mobile close button */}
@@ -163,7 +163,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-1.5">
             {navItems.map((item) => {
               const active = isActive(item.href);
               return (
@@ -171,21 +171,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-space-sm py-space-xs rounded-xl transition-all ${
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
                     active
                       ? 'bg-primary-container text-on-primary-container font-semibold shadow-[0_4px_14px_rgba(200,138,133,0.2)]'
-                      : 'text-on-surface-variant font-title-md text-title-md hover:bg-surface-container-high hover:text-on-surface'
+                      : 'text-on-surface-variant text-[15px] font-medium hover:bg-surface-container-high hover:text-on-surface'
                   }`}
                 >
-                  <div className="flex items-center gap-space-sm">
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`material-symbols-outlined text-xl ${
+                      className={`material-symbols-outlined text-[22px] ${
                         item.icon === 'auto_awesome' ? 'text-secondary' : ''
                       }`}
                     >
                       {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="text-[15px] font-medium">{item.label}</span>
                   </div>
                   {item.badge && (
                     <span className="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold">
@@ -250,9 +250,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main Content Area */}
-      <div className="lg:pl-72 flex flex-col min-h-screen">
+      <div className="lg:pl-80 flex flex-col min-h-screen">
         {/* Top Header */}
-        <header className="fixed top-0 left-0 lg:left-72 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+        <header className="fixed top-0 left-0 lg:left-80 right-0 h-20 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
           <div className="h-20 w-full px-space-md lg:px-space-lg flex items-center justify-between gap-space-md">
             {/* Left Header info */}
             <div className="flex items-center gap-space-md">
