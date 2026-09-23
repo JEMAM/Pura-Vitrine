@@ -112,12 +112,18 @@ export async function POST(request: NextRequest) {
 
       const originalsDir = join(UPLOAD_DIR, 'originals');
       const thumbnailsDir = join(UPLOAD_DIR, 'thumbnails');
-      await ensureDir(originalsDir);
-      await ensureDir(thumbnailsDir);
-
       const buffer = Buffer.from(await file.arrayBuffer());
-      const filePath = join(originalsDir, filename);
-      await writeFile(filePath, buffer);
+
+      let mediaPath = `/uploads/originals/${filename}`;
+      try {
+        await ensureDir(originalsDir);
+        await ensureDir(thumbnailsDir);
+        const filePath = join(originalsDir, filename);
+        await writeFile(filePath, buffer);
+      } catch (fsErr) {
+        console.warn('Local disk write failed (Vercel serverless read-only filesystem). Using data URI fallback:', fsErr);
+        mediaPath = `data:${file.type};base64,${buffer.toString('base64')}`;
+      }
 
       const autoTags = await generateBeautyTags(file.name, buffer, file.type);
 
@@ -130,8 +136,8 @@ export async function POST(request: NextRequest) {
             originalName: file.name,
             mimeType: file.type,
             size: file.size,
-            path: `/uploads/originals/${filename}`,
-            thumbnailPath: type === 'IMAGE' ? `/uploads/originals/${filename}` : null,
+            path: mediaPath,
+            thumbnailPath: type === 'IMAGE' ? mediaPath : null,
             type: type as 'IMAGE' | 'VIDEO',
             metadata: {},
             tags: {
@@ -160,8 +166,8 @@ export async function POST(request: NextRequest) {
           originalName: file.name,
           mimeType: file.type,
           size: file.size,
-          path: `/uploads/originals/${filename}`,
-          thumbnailPath: type === 'IMAGE' ? `/uploads/originals/${filename}` : null,
+          path: mediaPath,
+          thumbnailPath: type === 'IMAGE' ? mediaPath : null,
           type: type as 'IMAGE' | 'VIDEO',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

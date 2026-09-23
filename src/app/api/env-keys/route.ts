@@ -114,14 +114,22 @@ export async function POST(request: NextRequest) {
       process.env[key] = sanitizedVal;
     }
 
-    fs.writeFileSync(ENV_FILE_PATH, lines.join('\n'), 'utf-8');
-
-    return NextResponse.json({
-      success: true,
-      message: 'Chaves de API salvas com sucesso no arquivo .env.local!',
-    });
+    try {
+      fs.writeFileSync(ENV_FILE_PATH, lines.join('\n'), 'utf-8');
+      return NextResponse.json({
+        success: true,
+        message: 'Chaves salvas com sucesso no arquivo .env.local!',
+      });
+    } catch (fsErr) {
+      console.warn('Cannot write to disk (Vercel read-only environment):', fsErr);
+      return NextResponse.json({
+        success: true,
+        message:
+          'Chaves atualizadas na sessão ativa! Na Vercel, adicione as variáveis no painel da Vercel (Project Settings > Environment Variables) para persistência permanente.',
+      });
+    }
   } catch (error) {
     console.error('Error saving env keys:', error);
-    return NextResponse.json({ error: 'Erro ao salvar chaves no .env.local' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro ao processar chaves' }, { status: 500 });
   }
 }
