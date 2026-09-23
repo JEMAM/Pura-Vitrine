@@ -12,6 +12,7 @@ export interface TikTokTrend {
   suggestedHook: string;
   videoFormat: 'Reels / TikTok' | 'Carrossel' | 'Antes & Depois' | 'Tutorial Rápido';
   soundtrackSuggestion?: string;
+  tiktokUrl: string;
   creativeCenterUrl: string;
 }
 
@@ -30,6 +31,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Se o seu cabelo tá poroso e sem vida, você precisa desse procedimento urgente!',
     videoFormat: 'Antes & Depois',
     soundtrackSuggestion: 'Vibes acústicas / Lo-fi clean girl aesthetic',
+    tiktokUrl: 'https://www.tiktok.com/tag/acidificacaocapilar',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -46,6 +48,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'O tom de morena iluminada mais pedido pelas nossas clientes neste outono ✨',
     videoFormat: 'Reels / TikTok',
     soundtrackSuggestion: 'Transição rítmica no momento do balanço do cabelo',
+    tiktokUrl: 'https://www.tiktok.com/tag/morenailuminada',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -62,6 +65,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Cansada do cabelo reto e pesado? Veja como o corte em camadas muda completamente o rosto!',
     videoFormat: 'Tutorial Rápido',
     soundtrackSuggestion: 'Pop chic / batida moderna suave',
+    tiktokUrl: 'https://www.tiktok.com/tag/butterflycut',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -78,6 +82,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Você provavelmente está passando o óleo reparador do jeito errado no seu cabelo...',
     videoFormat: 'Reels / TikTok',
     soundtrackSuggestion: 'Voz explicativa com trilha relaxante de fundo',
+    tiktokUrl: 'https://www.tiktok.com/tag/oleocapilar',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -94,6 +99,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Pele de porcelana sem maquiagem pesada: o segredo do nosso protocolo glow.',
     videoFormat: 'Carrossel',
     soundtrackSuggestion: 'Música ASMR / sons de pincel e água relaxante',
+    tiktokUrl: 'https://www.tiktok.com/tag/skincarebrasil',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -110,6 +116,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Loiro claríssimo sem quebra: teste de mecha e o segredo da saúde do fio!',
     videoFormat: 'Antes & Depois',
     soundtrackSuggestion: 'Transição com efeito sonoro "whoosh"',
+    tiktokUrl: 'https://www.tiktok.com/tag/loiroperolado',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -126,6 +133,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'A esmaltação que as celebridades mais usam e que combina com qualquer look!',
     videoFormat: 'Reels / TikTok',
     soundtrackSuggestion: 'Áudio pop trending / aesthetic sound',
+    tiktokUrl: 'https://www.tiktok.com/tag/glazeddonutnails',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR',
   },
   {
@@ -142,6 +150,7 @@ export const TIKTOK_BEAUTY_TRENDS: TikTokTrend[] = [
     suggestedHook: 'Comece filmando o cabelo preso e sem escova, solte no drop da música!',
     videoFormat: 'Reels / TikTok',
     soundtrackSuggestion: 'Batida acelerando com drop aos 4 segundos',
+    tiktokUrl: 'https://www.tiktok.com/tag/hairtransformation',
     creativeCenterUrl: 'https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/pt?countryCode=BR',
   },
 ];

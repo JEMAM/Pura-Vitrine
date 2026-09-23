@@ -1028,9 +1028,14 @@ export default function AIPage() {
                         <p className="text-[11px] text-white/90 line-clamp-2 leading-tight drop-shadow">
                           {previewingTrend.description}
                         </p>
-                        <span className="text-[11px] font-bold text-primary-fixed drop-shadow">
+                        <a
+                          href={previewingTrend.tiktokUrl || `https://www.tiktok.com/tag/${previewingTrend.hashtag.replace('#', '')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] font-bold text-primary-fixed drop-shadow hover:underline inline-block"
+                        >
                           {previewingTrend.hashtag}
-                        </span>
+                        </a>
                         <div className="flex items-center gap-1 text-[10px] text-white/70 mt-0.5 truncate">
                           <Music size={10} />
                           <span className="truncate">
@@ -1101,7 +1106,7 @@ export default function AIPage() {
                         <span>Gerar Roteiro Completo com IA (Gemini)</span>
                       </button>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                         <button
                           type="button"
                           onClick={() => {
@@ -1109,20 +1114,41 @@ export default function AIPage() {
                             setPreviewingTrend(null);
                             handleSendTrendToEditor(t);
                           }}
-                          className="flex-1 py-2.5 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
                         >
                           <ArrowRight size={14} />
                           <span>Usar no Editor de Post</span>
                         </button>
 
                         <a
-                          href={previewingTrend.creativeCenterUrl}
+                          href={previewingTrend.tiktokUrl || `https://www.tiktok.com/tag/${previewingTrend.hashtag.replace('#', '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="py-2.5 px-3 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-all flex items-center gap-1.5 border border-outline-variant/20"
+                          className="py-2.5 px-3.5 rounded-xl bg-black hover:bg-stone-800 text-white text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-sm shrink-0"
                         >
                           <span>Ver no TikTok Oficial</span>
                           <ExternalLink size={13} />
+                        </a>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-on-surface-variant pt-1 px-1">
+                        <a
+                          href={`https://www.tiktok.com/search?q=${encodeURIComponent(previewingTrend.name)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors flex items-center gap-1"
+                        >
+                          <span>Buscar vídeos de &ldquo;{previewingTrend.name}&rdquo;</span>
+                          <ExternalLink size={10} />
+                        </a>
+                        <a
+                          href={previewingTrend.creativeCenterUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary transition-colors flex items-center gap-1"
+                        >
+                          <span>Creative Center (Métricas)</span>
+                          <ExternalLink size={10} />
                         </a>
                       </div>
                     </div>
