@@ -28,6 +28,11 @@ import {
   MessageCircle,
   Bookmark,
   RotateCcw,
+  MapPin,
+  Target,
+  Megaphone,
+  Smartphone,
+  Layers,
 } from 'lucide-react';
 import { TIKTOK_BEAUTY_TRENDS, TikTokTrend } from '@/lib/tiktok-trends';
 
@@ -62,7 +67,7 @@ interface CurationResult {
 
 export default function AIPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'copy' | 'ideas' | 'trends' | 'curation' | 'strategy'>('copy');
+  const [activeTab, setActiveTab] = useState<'copy' | 'ideas' | 'trends' | 'multichannel' | 'curation' | 'strategy'>('copy');
 
   // Copywriting state
   const [service, setService] = useState('Cabelo');
@@ -89,6 +94,19 @@ export default function AIPage() {
   const [generatingTrendScript, setGeneratingTrendScript] = useState(false);
   const [trendScriptResult, setTrendScriptResult] = useState<any>(null);
   const [copiedScript, setCopiedScript] = useState(false);
+
+  // Multichannel state (Pinterest, Google Maps, Meta Ads, Stories)
+  const [multiSubTab, setMultiSubTab] = useState<'pinterest' | 'google' | 'meta-ads' | 'stories'>('pinterest');
+  const [multiProcedure, setMultiProcedure] = useState('Morena Iluminada Mel');
+  const [multiService, setMultiService] = useState('Cabelo');
+  const [multiBranch, setMultiBranch] = useState('Barão Geraldo • Campinas');
+  const [multiOffer, setMultiOffer] = useState('Diagnóstico capilar gratuito + 15% OFF na 1ª visita');
+  const [loadingMulti, setLoadingMulti] = useState(false);
+  const [pinterestResult, setPinterestResult] = useState<any>(null);
+  const [googleResult, setGoogleResult] = useState<any>(null);
+  const [metaAdsResult, setMetaAdsResult] = useState<any>(null);
+  const [storiesResult, setStoriesResult] = useState<any>(null);
+  const [copiedMulti, setCopiedMulti] = useState(false);
 
   // Curation state
   const [generatingCuration, setGeneratingCuration] = useState(false);
@@ -262,6 +280,43 @@ export default function AIPage() {
     setHiddenTrendIds([]);
   };
 
+  const handleGenerateMultichannel = async (subType?: 'pinterest' | 'google' | 'meta-ads' | 'stories') => {
+    const activeTarget = subType || multiSubTab;
+    setLoadingMulti(true);
+    setCopiedMulti(false);
+    try {
+      const typeMap = {
+        pinterest: 'pinterest-pin',
+        google: 'google-business',
+        'meta-ads': 'meta-ads',
+        stories: 'interactive-stories',
+      };
+
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentType: typeMap[activeTarget],
+          procedure: multiProcedure,
+          service: multiService,
+          branch: multiBranch,
+          offerText: multiOffer,
+        }),
+      });
+      const data = await res.json();
+      if (data.data) {
+        if (activeTarget === 'pinterest') setPinterestResult(data.data);
+        if (activeTarget === 'google') setGoogleResult(data.data);
+        if (activeTarget === 'meta-ads') setMetaAdsResult(data.data);
+        if (activeTarget === 'stories') setStoriesResult(data.data);
+      }
+    } catch (err) {
+      console.error('Multichannel generate error:', err);
+    } finally {
+      setLoadingMulti(false);
+    }
+  };
+
   const filteredTrends = TIKTOK_BEAUTY_TRENDS.filter((t) => {
     if (hiddenTrendIds.includes(t.id)) return false;
     const matchesCategory = selectedTrendCategory === 'all' || t.category === selectedTrendCategory;
@@ -314,6 +369,21 @@ export default function AIPage() {
           <span>Tendências TikTok</span>
           <span className="ml-1 text-[10px] font-bold uppercase tracking-wider bg-rose-500 text-white px-1.5 py-0.5 rounded-full">
             CREATIVE CENTER
+          </span>
+        </button>
+        <button
+          className={`ai-tab-btn ${activeTab === 'multichannel' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveTab('multichannel');
+            if (!pinterestResult && !googleResult && !metaAdsResult && !storiesResult) {
+              handleGenerateMultichannel('pinterest');
+            }
+          }}
+        >
+          <Layers size={16} className="text-secondary" />
+          <span>Divulgação Multicanal</span>
+          <span className="ml-1 text-[10px] font-bold uppercase tracking-wider bg-secondary text-on-secondary px-1.5 py-0.5 rounded-full">
+            PINTEREST &amp; ADS
           </span>
         </button>
         <button
@@ -1160,6 +1230,842 @@ export default function AIPage() {
                   </div>
                 ) : null}
               </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB: MULTICHANNEL EXPANSION */}
+      {activeTab === 'multichannel' && (
+        <div className="flex flex-col gap-6">
+          {/* Header Multicanal */}
+          <div className="card p-6 bg-surface border border-outline-variant/20 rounded-2xl shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                    <Sparkles size={12} /> Presença 360° & Tráfego Local
+                  </span>
+                </div>
+                <h2 className="text-xl font-headline font-bold text-on-surface">
+                  Expansão Multicanal para Salão
+                </h2>
+                <p className="text-xs text-on-surface-variant max-w-2xl mt-1">
+                  Crie conteúdos profissionais e segmentados para os canais de maior conversão de beleza: Pinterest (desejo visual e SEO a longo prazo), Google Maps (busca local com intenção de compra imediata), Meta Ads (anúncios patrocinados por raio em Campinas) e Stories Interativos (engajamento diário).
+                </p>
+              </div>
+
+              {/* Sub-abas de Canais */}
+              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-surface-container-low rounded-xl border border-outline-variant/15">
+                <button
+                  type="button"
+                  onClick={() => setMultiSubTab('pinterest')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    multiSubTab === 'pinterest'
+                      ? 'bg-rose-500 text-white shadow-sm'
+                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface'
+                  }`}
+                >
+                  <Tag size={13} />
+                  <span>Pinterest 2:3</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMultiSubTab('google')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    multiSubTab === 'google'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface'
+                  }`}
+                >
+                  <MapPin size={13} />
+                  <span>Google Meu Negócio</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMultiSubTab('meta-ads')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    multiSubTab === 'meta-ads'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface'
+                  }`}
+                >
+                  <Target size={13} />
+                  <span>Meta Ads Local</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMultiSubTab('stories')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    multiSubTab === 'stories'
+                      ? 'bg-amber-600 text-white shadow-sm'
+                      : 'text-on-surface-variant hover:text-on-surface hover:bg-surface'
+                  }`}
+                >
+                  <Smartphone size={13} />
+                  <span>Stories Interativos</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Inputs de Configuração */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6 pt-5 border-t border-outline-variant/15">
+              <div>
+                <label className="text-xs font-semibold text-on-surface block mb-1.5">
+                  Procedimento / Foco
+                </label>
+                <input
+                  type="text"
+                  value={multiProcedure}
+                  onChange={(e) => setMultiProcedure(e.target.value)}
+                  placeholder="Ex: Morena Iluminada Avelã, Cronograma Capilar"
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-on-surface block mb-1.5">
+                  Categoria do Serviço
+                </label>
+                <select
+                  value={multiService}
+                  onChange={(e) => setMultiService(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary"
+                >
+                  <option value="Mechas & Coloração">Mechas & Coloração</option>
+                  <option value="Tratamento & Spa Capilar">Tratamento & Spa Capilar</option>
+                  <option value="Corte & Visagismo">Corte & Visagismo</option>
+                  <option value="Penteados & Noivas">Penteados & Noivas</option>
+                  <option value="Unhas & Podologia">Unhas & Podologia</option>
+                  <option value="Estética & Sobrancelhas">Estética & Sobrancelhas</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-on-surface block mb-1.5">
+                  Bairro / Cidade
+                </label>
+                <input
+                  type="text"
+                  value={multiBranch}
+                  onChange={(e) => setMultiBranch(e.target.value)}
+                  placeholder="Ex: Cambuí, Barão Geraldo, Taquaral"
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-on-surface block mb-1.5">
+                  Diferencial / Oferta (Opcional)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={multiOffer}
+                    onChange={(e) => setMultiOffer(e.target.value)}
+                    placeholder="Ex: Diagnóstico capilar cortesia"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleGenerateMultichannel()}
+                    disabled={loadingMulti}
+                    className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
+                  >
+                    {loadingMulti ? (
+                      <RotateCcw className="animate-spin" size={14} />
+                    ) : (
+                      <Wand2 size={14} />
+                    )}
+                    <span>{loadingMulti ? 'Gerando...' : 'Gerar'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ÁREA DE RESULTADOS DO CANAL SELECIONADO */}
+          {/* 1. PINTEREST STUDIO */}
+          {multiSubTab === 'pinterest' && (
+            <div className="card p-6 bg-surface border border-outline-variant/20 rounded-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center font-bold">
+                    📌
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-on-surface">
+                      Pins Verticais 2:3 & Estratégia de SEO no Pinterest
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      O Pinterest funciona como um motor de busca visual. As clientes salvam referências meses antes de fazer mechas ou cortes.
+                    </p>
+                  </div>
+                </div>
+
+                {pinterestResult && (
+                  <button
+                    onClick={() => {
+                      const text = pinterestResult.pins
+                        ?.map(
+                          (p: any, i: number) =>
+                            `PIN #${i + 1}: ${p.title}\nTexto na Imagem: ${p.overlayText}\nPasta: ${p.boardSuggestion}\nDescrição:\n${p.description}\nTags: ${p.hashtags}`
+                        )
+                        .join('\n\n---\n\n');
+                      navigator.clipboard.writeText(text || '');
+                      setCopiedMulti(true);
+                      setTimeout(() => setCopiedMulti(false), 2000);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold transition-all flex items-center gap-1.5"
+                  >
+                    {copiedMulti ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    <span>{copiedMulti ? 'Copiado!' : 'Copiar Todos os Pins'}</span>
+                  </button>
+                )}
+              </div>
+
+              {!pinterestResult && !loadingMulti ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-outline-variant/30 rounded-2xl">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-xl mb-3">
+                    📌
+                  </div>
+                  <h4 className="text-sm font-bold text-on-surface">Nenhum Pin gerado ainda</h4>
+                  <p className="text-xs text-on-surface-variant max-w-md mt-1 mb-4">
+                    Informe o procedimento acima e clique em &quot;Gerar&quot; para criar títulos ricos em palavras-chave do Pinterest, textos de sobreposição 2:3 e pastas estratégicas.
+                  </p>
+                  <button
+                    onClick={() => handleGenerateMultichannel('pinterest')}
+                    className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition-all flex items-center gap-1.5"
+                  >
+                    <Wand2 size={13} />
+                    <span>Gerar Pins de Teste</span>
+                  </button>
+                </div>
+              ) : null}
+
+              {loadingMulti && multiSubTab === 'pinterest' && (
+                <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <RotateCcw className="animate-spin text-rose-500" size={28} />
+                  <span className="text-xs font-medium text-on-surface-variant">
+                    Criando títulos de busca visual e mockups 2:3 com IA...
+                  </span>
+                </div>
+              )}
+
+              {pinterestResult && !loadingMulti && (
+                <div className="flex flex-col gap-6">
+                  {/* Pin Idea / Strategy */}
+                  {pinterestResult.pinIdea && (
+                    <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs flex items-center gap-2">
+                      <Sparkles size={16} className="text-rose-600 shrink-0" />
+                      <span className="text-on-surface">
+                        <strong>Estratégia de Busca:</strong> {pinterestResult.pinIdea}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Grid de Pins 2:3 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {pinterestResult.pins?.map((pin: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="bg-surface-container-low rounded-2xl border border-outline-variant/20 overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-all"
+                      >
+                        {/* Simulação visual do Card 2:3 */}
+                        <div className="relative aspect-[2/3] bg-gradient-to-br from-neutral-800 via-neutral-900 to-stone-900 p-5 flex flex-col justify-between text-white overflow-hidden group">
+                          {/* Badges superiores */}
+                          <div className="flex items-center justify-between z-10">
+                            <span className="px-2 py-0.5 rounded-full bg-rose-600/90 text-[10px] font-bold tracking-wide uppercase">
+                              Pin 2:3 #{idx + 1}
+                            </span>
+                            <span className="text-[10px] bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-stone-300">
+                              Pasta: {pin.boardSuggestion || 'Cabelos dos Sonhos'}
+                            </span>
+                          </div>
+
+                          {/* Overlay Text Estilizado */}
+                          <div className="z-10 my-auto py-4">
+                            <div className="inline-block p-3.5 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl max-w-[90%]">
+                              <span className="text-[11px] font-bold text-rose-300 uppercase tracking-wider block mb-1">
+                                Tendência em Destaque
+                              </span>
+                              <h4 className="text-base font-bold leading-tight font-headline text-white drop-shadow">
+                                &quot;{pin.overlayText}&quot;
+                              </h4>
+                            </div>
+                          </div>
+
+                          {/* Rodapé do mockup */}
+                          <div className="z-10 flex items-center justify-between text-[11px] text-stone-300 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-xl">
+                            <span>Campinas &bull; {multiBranch}</span>
+                            <span className="font-semibold text-rose-300">Salvar 📌</span>
+                          </div>
+                        </div>
+
+                        {/* Metadados SEO */}
+                        <div className="p-4 flex flex-col gap-2.5 flex-1 justify-between text-xs">
+                          <div>
+                            <span className="text-[10px] uppercase font-bold text-primary tracking-wider">
+                              Título Otimizado (SEO)
+                            </span>
+                            <h4 className="font-bold text-on-surface text-sm mt-0.5">
+                              {pin.title}
+                            </h4>
+                          </div>
+
+                          <div>
+                            <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">
+                              Descrição para Ranqueamento
+                            </span>
+                            <p className="text-on-surface-variant text-xs mt-0.5 line-clamp-3 leading-relaxed">
+                              {pin.description}
+                            </p>
+                          </div>
+
+                          <div className="pt-2 border-t border-outline-variant/15 flex items-center justify-between">
+                            <span className="text-[10px] text-on-surface-variant font-mono truncate max-w-[170px]">
+                              {pin.hashtags}
+                            </span>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  `${pin.title}\n\n${pin.description}\n\nPasta sugerida: ${pin.boardSuggestion}\nTexto no Pin: ${pin.overlayText}\n\n${pin.hashtags}`
+                                );
+                                setCopiedMulti(true);
+                                setTimeout(() => setCopiedMulti(false), 1500);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-[11px] font-semibold text-on-surface transition-all flex items-center gap-1"
+                            >
+                              <Copy size={12} />
+                              <span>Copiar</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 2. GOOGLE MEU NEGÓCIO / MAPS */}
+          {multiSubTab === 'google' && (
+            <div className="card p-6 bg-surface border border-outline-variant/20 rounded-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-600/10 text-blue-600 flex items-center justify-center font-bold">
+                    📍
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-on-surface">
+                      Post Local no Google Maps (Google Perfil da Empresa)
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      Clientes que buscam &quot;salão de beleza perto de mim&quot; ou &quot;mechas em {multiBranch}&quot; encontram estas postagens diretamente na busca do Google.
+                    </p>
+                  </div>
+                </div>
+
+                {googleResult && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `TÍTULO: ${googleResult.title}\n\nPOST GOOGLE MAPS:\n${googleResult.postCopy}\n\nBOTÃO CTA: ${googleResult.ctaType}\nPALAVRAS-CHAVE LOCAIS: ${googleResult.keywords?.join(', ')}\nFOTO RECOMENDADA: ${googleResult.photoTip}`
+                      );
+                      setCopiedMulti(true);
+                      setTimeout(() => setCopiedMulti(false), 2000);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold transition-all flex items-center gap-1.5"
+                  >
+                    {copiedMulti ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    <span>{copiedMulti ? 'Copiado!' : 'Copiar Post Google'}</span>
+                  </button>
+                )}
+              </div>
+
+              {!googleResult && !loadingMulti ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-outline-variant/30 rounded-2xl">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-600/10 text-blue-600 flex items-center justify-center text-xl mb-3">
+                    📍
+                  </div>
+                  <h4 className="text-sm font-bold text-on-surface">Nenhum post do Google gerado ainda</h4>
+                  <p className="text-xs text-on-surface-variant max-w-md mt-1 mb-4">
+                    Gere uma atualização local com foco em buscas orgânicas de Campinas e botão de ação direto para o WhatsApp ou agendamento.
+                  </p>
+                  <button
+                    onClick={() => handleGenerateMultichannel('google')}
+                    className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all flex items-center gap-1.5"
+                  >
+                    <Wand2 size={13} />
+                    <span>Gerar Post do Google Meu Negócio</span>
+                  </button>
+                </div>
+              ) : null}
+
+              {loadingMulti && multiSubTab === 'google' && (
+                <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <RotateCcw className="animate-spin text-blue-600" size={28} />
+                  <span className="text-xs font-medium text-on-surface-variant">
+                    Otimizando palavras-chave locais e post do Google Maps...
+                  </span>
+                </div>
+              )}
+
+              {googleResult && !loadingMulti && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Mockup do Google Business Card */}
+                  <div className="lg:col-span-2 bg-surface-container-low rounded-2xl border border-outline-variant/20 p-5 shadow-sm">
+                    {/* Header Google Profile */}
+                    <div className="flex items-start justify-between pb-4 border-b border-outline-variant/20">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                          G
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-sm text-on-surface">Salão & Espaço Beauty</span>
+                            <span className="text-blue-500 text-xs">✓</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-amber-500 font-semibold">
+                            <span>5,0</span>
+                            <span>★★★★★</span>
+                            <span className="text-on-surface-variant text-[11px] font-normal">(184 avaliações no Google)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-semibold">
+                        Post no Perfil
+                      </span>
+                    </div>
+
+                    {/* Conteúdo do Post */}
+                    <div className="mt-4 flex flex-col gap-3">
+                      <h4 className="font-bold text-on-surface text-base">
+                        {googleResult.title}
+                      </h4>
+                      <p className="text-xs text-on-surface leading-relaxed whitespace-pre-wrap font-body">
+                        {googleResult.postCopy}
+                      </p>
+
+                      {/* Botão de Ação CTA */}
+                      <div className="mt-2 pt-3 border-t border-outline-variant/15 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <button className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-sm hover:bg-blue-700 transition-all flex items-center gap-1.5">
+                            <span>{googleResult.ctaType || 'Agendar Horário'}</span>
+                            <ExternalLink size={13} />
+                          </button>
+                          <span className="text-[11px] text-on-surface-variant">
+                            Redireciona para o link oficial de agendamento
+                          </span>
+                        </div>
+                        <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                          <CheckCircle2 size={13} /> Aberto agora
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Painel Lateral: SEO Local & Dicas */}
+                  <div className="flex flex-col gap-4">
+                    <div className="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/20">
+                      <span className="text-xs font-bold text-on-surface uppercase tracking-wider block mb-2">
+                        🔍 Palavras-chave de Busca Local
+                      </span>
+                      <p className="text-[11px] text-on-surface-variant mb-3">
+                        Termos indexados pelo Google para clientes na sua região:
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {googleResult.keywords?.map((kw: string, i: number) => (
+                          <span
+                            key={i}
+                            className="px-2.5 py-1 rounded-lg bg-surface border border-outline-variant/30 text-[11px] font-medium text-primary"
+                          >
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {googleResult.photoTip && (
+                      <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-xs">
+                        <strong className="text-amber-800 block mb-1 flex items-center gap-1.5">
+                          <Camera size={14} /> Recomendação de Foto:
+                        </strong>
+                        <p className="text-on-surface-variant text-[11px] leading-relaxed">
+                          {googleResult.photoTip}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="p-3 bg-blue-500/10 rounded-xl text-xs text-on-surface-variant">
+                      💡 <strong>Dica de Ouro:</strong> Publique 1 atualização por semana no Perfil da Empresa para manter o salão no Top 3 do Google Maps (Local Pack) em Campinas.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 3. META ADS (INSTAGRAM & FACEBOOK PATROCINADO) */}
+          {multiSubTab === 'meta-ads' && (
+            <div className="card p-6 bg-surface border border-outline-variant/20 rounded-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center font-bold">
+                    🎯
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-on-surface">
+                      Anúncio Meta Ads Local (Instagram & Facebook Ads)
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      Campanha patrocinada de tráfego direto para agendamento, segmentada por raio em torno do salão.
+                    </p>
+                  </div>
+                </div>
+
+                {metaAdsResult && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `TÍTULO / HEADLINE:\n${metaAdsResult.headline}\n\nTEXTO PRINCIPAL DO ANÚNCIO:\n${metaAdsResult.primaryText}\n\nBOTÃO CTA: ${metaAdsResult.cta}\n\nSEGMENTAÇÃO TÉCNICA:\nRaio: ${metaAdsResult.targetAudience?.radius}\nIdade: ${metaAdsResult.targetAudience?.age}\nPúblico: ${metaAdsResult.targetAudience?.gender}\nInteresses: ${metaAdsResult.targetAudience?.interests?.join(', ')}\n\nORÇAMENTO RECOMENDADO: ${metaAdsResult.budgetSuggestion}`
+                      );
+                      setCopiedMulti(true);
+                      setTimeout(() => setCopiedMulti(false), 2000);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold transition-all flex items-center gap-1.5"
+                  >
+                    {copiedMulti ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    <span>{copiedMulti ? 'Copiado!' : 'Copiar Dados do Anúncio'}</span>
+                  </button>
+                )}
+              </div>
+
+              {!metaAdsResult && !loadingMulti ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-outline-variant/30 rounded-2xl">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center text-xl mb-3">
+                    🎯
+                  </div>
+                  <h4 className="text-sm font-bold text-on-surface">Nenhum anúncio gerado ainda</h4>
+                  <p className="text-xs text-on-surface-variant max-w-md mt-1 mb-4">
+                    Gere cópia persuasiva de anúncio patrocinado com segmentação de raio (3 a 5km de {multiBranch}) e sugestão de orçamento diário.
+                  </p>
+                  <button
+                    onClick={() => handleGenerateMultichannel('meta-ads')}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-all flex items-center gap-1.5"
+                  >
+                    <Wand2 size={13} />
+                    <span>Gerar Campanha Meta Ads</span>
+                  </button>
+                </div>
+              ) : null}
+
+              {loadingMulti && multiSubTab === 'meta-ads' && (
+                <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <RotateCcw className="animate-spin text-indigo-600" size={28} />
+                  <span className="text-xs font-medium text-on-surface-variant">
+                    Calculando copywriting de conversão e raio de tráfego local...
+                  </span>
+                </div>
+              )}
+
+              {metaAdsResult && !loadingMulti && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Mockup do Post Patrocinado Instagram */}
+                  <div className="lg:col-span-2 bg-surface-container-low rounded-2xl border border-outline-variant/20 p-5 shadow-sm">
+                    {/* Header Patrocinado */}
+                    <div className="flex items-center justify-between pb-3 border-b border-outline-variant/15">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-0.5">
+                          <div className="w-full h-full bg-surface rounded-full flex items-center justify-center text-xs font-bold text-primary">
+                            ✂️
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1">
+                            <span className="font-bold text-xs text-on-surface">salao_beleza_campinas</span>
+                            <span className="text-xs text-primary font-bold">&bull; Seguir</span>
+                          </div>
+                          <span className="text-[10px] text-on-surface-variant block font-medium">
+                            Patrocinado &bull; {multiBranch}, Campinas
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-xs text-on-surface-variant font-bold">&bull;&bull;&bull;</span>
+                    </div>
+
+                    {/* Headline e Imagem Mockup */}
+                    <div className="mt-3 flex flex-col gap-3">
+                      <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block mb-0.5">
+                          Headline de Impacto:
+                        </span>
+                        <h4 className="font-bold text-sm text-on-surface">
+                          {metaAdsResult.headline}
+                        </h4>
+                      </div>
+
+                      {/* Texto Principal */}
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant block mb-1">
+                          Texto Principal do Anúncio (Copywriting):
+                        </span>
+                        <div className="p-3.5 bg-surface rounded-xl text-xs text-on-surface whitespace-pre-wrap border border-outline-variant/20 leading-relaxed font-body">
+                          {metaAdsResult.primaryText}
+                        </div>
+                      </div>
+
+                      {/* Botão de Chamada para Ação */}
+                      <div className="p-3 bg-surface-container-high rounded-xl flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-on-surface-variant uppercase font-bold block">
+                            Ação do Botão:
+                          </span>
+                          <span className="font-bold text-xs text-on-surface">
+                            {metaAdsResult.cta || 'Fale Conosco no WhatsApp'}
+                          </span>
+                        </div>
+                        <button className="px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold shadow-sm flex items-center gap-1">
+                          <span>{metaAdsResult.cta || 'Fale Conosco'}</span>
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Painel de Segmentação Técnica */}
+                  <div className="flex flex-col gap-4">
+                    <div className="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/20">
+                      <span className="text-xs font-bold text-on-surface uppercase tracking-wider block mb-3 flex items-center gap-1.5">
+                        <Target size={14} className="text-indigo-600" /> Segmentação no Gerenciador
+                      </span>
+
+                      <div className="flex flex-col gap-2.5 text-xs">
+                        <div>
+                          <span className="text-[10px] font-semibold text-on-surface-variant block">📍 Localização & Raio:</span>
+                          <span className="font-medium text-on-surface">
+                            {metaAdsResult.targetAudience?.radius || `Pino no salão + raio de 4km em ${multiBranch}, Campinas`}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-semibold text-on-surface-variant block">👥 Idade & Gênero:</span>
+                          <span className="font-medium text-on-surface">
+                            {metaAdsResult.targetAudience?.age || '24 a 52 anos'} &bull; {metaAdsResult.targetAudience?.gender || 'Mulheres'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-semibold text-on-surface-variant block">🎯 Interesses de Alta Afinidade:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {metaAdsResult.targetAudience?.interests?.map((item: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 text-[10px] font-medium">
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-xs">
+                      <strong className="text-emerald-800 block mb-1">
+                        💰 Orçamento Diário Recomendado:
+                      </strong>
+                      <p className="text-on-surface font-bold text-sm">
+                        {metaAdsResult.budgetSuggestion || 'R$ 15,00 a R$ 25,00 / dia'}
+                      </p>
+                      <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+                        Suficiente para alcançar entre 1.200 a 3.500 mulheres qualificadas no seu bairro diariamente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. STORIES INTERATIVOS */}
+          {multiSubTab === 'stories' && (
+            <div className="card p-6 bg-surface border border-outline-variant/20 rounded-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
+                    📱
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-on-surface">
+                      Roteiro de Stories com Stickers Interativos
+                    </h3>
+                    <p className="text-xs text-on-surface-variant">
+                      Gere enquetes, caixas de perguntas e quizzes de mito/verdade que forçam a cliente a tocar na tela e iniciar conversas no Direct.
+                    </p>
+                  </div>
+                </div>
+
+                {storiesResult && (
+                  <button
+                    onClick={() => {
+                      const text = `STORIES INTERATIVOS:\n\n1. ENQUETE A/B:\nPergunta: ${storiesResult.pollStory?.question}\nOpção A: ${storiesResult.pollStory?.optionA}\nOpção B: ${storiesResult.pollStory?.optionB}\nEstratégia: ${storiesResult.pollStory?.strategy}\n\n2. CAIXA DE PERGUNTAS:\nSticker: ${storiesResult.questionBoxStory?.stickerPrompt}\nRespostas Ideais: ${storiesResult.questionBoxStory?.idealAnswers?.join(' | ')}\n\n3. QUIZ MITO OU VERDADE:\nPergunta: ${storiesResult.quizStory?.question}\nExplicação: ${storiesResult.quizStory?.explanation}`;
+                      navigator.clipboard.writeText(text);
+                      setCopiedMulti(true);
+                      setTimeout(() => setCopiedMulti(false), 2000);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold transition-all flex items-center gap-1.5"
+                  >
+                    {copiedMulti ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    <span>{copiedMulti ? 'Copiado!' : 'Copiar Todos os Stories'}</span>
+                  </button>
+                )}
+              </div>
+
+              {!storiesResult && !loadingMulti ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center border-2 border-dashed border-outline-variant/30 rounded-2xl">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xl mb-3">
+                    📱
+                  </div>
+                  <h4 className="text-sm font-bold text-on-surface">Nenhum Story gerado ainda</h4>
+                  <p className="text-xs text-on-surface-variant max-w-md mt-1 mb-4">
+                    Crie stickers prontos para copiar e colar no Instagram Stories, aumentando a retenção e gerando leads qualificados no Direct.
+                  </p>
+                  <button
+                    onClick={() => handleGenerateMultichannel('stories')}
+                    className="px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700 transition-all flex items-center gap-1.5"
+                  >
+                    <Wand2 size={13} />
+                    <span>Gerar Stickers de Stories</span>
+                  </button>
+                </div>
+              ) : null}
+
+              {loadingMulti && multiSubTab === 'stories' && (
+                <div className="py-12 flex flex-col items-center justify-center gap-3">
+                  <RotateCcw className="animate-spin text-amber-600" size={28} />
+                  <span className="text-xs font-medium text-on-surface-variant">
+                    Criando enquetes e caixinhas magnéticas de stories...
+                  </span>
+                </div>
+              )}
+
+              {storiesResult && !loadingMulti && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Card 1: Enquete A/B */}
+                  <div className="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-4 flex flex-col justify-between shadow-sm">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 text-[10px] font-bold uppercase">
+                          📊 Sticker de Enquete
+                        </span>
+                        <span className="text-[11px] text-on-surface-variant font-medium">Story 1</span>
+                      </div>
+
+                      <p className="text-[11px] text-on-surface-variant mb-2">
+                        {storiesResult.pollStory?.context}
+                      </p>
+
+                      {/* Mockup do Sticker de Enquete */}
+                      <div className="p-3.5 bg-surface rounded-xl border border-outline-variant/30 text-center shadow-sm">
+                        <span className="text-xs font-bold text-on-surface block mb-2.5">
+                          {storiesResult.pollStory?.question}
+                        </span>
+                        <div className="flex flex-col gap-2">
+                          <div className="p-2 rounded-lg bg-surface-container-high text-xs font-bold text-primary border border-primary/30 flex items-center justify-between px-3">
+                            <span>{storiesResult.pollStory?.optionA}</span>
+                            <span className="text-[10px] opacity-75">58%</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-surface-container-high text-xs font-bold text-on-surface border border-outline-variant/20 flex items-center justify-between px-3">
+                            <span>{storiesResult.pollStory?.optionB}</span>
+                            <span className="text-[10px] opacity-75">42%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+                      <strong className="text-primary block mb-0.5">🎯 Ação no Direct:</strong>
+                      {storiesResult.pollStory?.strategy}
+                    </div>
+                  </div>
+
+                  {/* Card 2: Caixinha de Perguntas */}
+                  <div className="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-4 flex flex-col justify-between shadow-sm">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase">
+                          💬 Caixinha Magnética
+                        </span>
+                        <span className="text-[11px] text-on-surface-variant font-medium">Story 2</span>
+                      </div>
+
+                      <p className="text-[11px] text-on-surface-variant mb-2">
+                        {storiesResult.questionBoxStory?.context}
+                      </p>
+
+                      {/* Mockup da Caixinha */}
+                      <div className="p-4 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-surface rounded-xl border border-amber-500/30 text-center shadow-sm">
+                        <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center mx-auto mb-2 text-xs font-bold">
+                          ?
+                        </div>
+                        <span className="text-xs font-bold text-on-surface block mb-2 leading-snug">
+                          &quot;{storiesResult.questionBoxStory?.stickerPrompt}&quot;
+                        </span>
+                        <div className="px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/30 text-[10px] text-on-surface-variant italic">
+                          Digite algo para o salão...
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+                      <strong className="text-amber-700 block mb-0.5">💡 Respostas Prontas p/ Gravar:</strong>
+                      <ul className="list-disc pl-3 space-y-0.5 text-[10px]">
+                        {storiesResult.questionBoxStory?.idealAnswers?.map((ans: string, i: number) => (
+                          <li key={i}>{ans}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Quiz Mito ou Verdade */}
+                  <div className="bg-surface-container-low rounded-2xl border border-outline-variant/20 p-4 flex flex-col justify-between shadow-sm">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 text-[10px] font-bold uppercase">
+                          🧠 Quiz / Mito vs Verdade
+                        </span>
+                        <span className="text-[11px] text-on-surface-variant font-medium">Story 3</span>
+                      </div>
+
+                      {/* Mockup do Quiz */}
+                      <div className="p-3.5 bg-surface rounded-xl border border-outline-variant/30 shadow-sm">
+                        <span className="text-xs font-bold text-on-surface block mb-2.5 text-center">
+                          {storiesResult.quizStory?.question}
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                          {storiesResult.quizStory?.options?.map((opt: any, i: number) => (
+                            <div
+                              key={i}
+                              className={`p-2 rounded-lg text-xs font-medium flex items-center justify-between px-3 ${
+                                opt.isCorrect
+                                  ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 font-bold'
+                                  : 'bg-surface-container-high border border-outline-variant/15 text-on-surface-variant'
+                              }`}
+                            >
+                              <span>{opt.text}</span>
+                              {opt.isCorrect && <Check size={12} className="text-emerald-600 shrink-0" />}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-outline-variant/15 text-[11px] text-on-surface-variant">
+                      <strong className="text-emerald-700 block mb-0.5">🎓 Explicação Profissional:</strong>
+                      <p className="text-[10px] leading-relaxed">
+                        {storiesResult.quizStory?.explanation}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

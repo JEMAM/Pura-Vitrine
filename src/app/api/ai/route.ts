@@ -292,6 +292,261 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
       });
     }
 
+    if (agentType === 'pinterest-pin') {
+      const { procedure, service, tone } = body;
+      if (hasValidKey) {
+        try {
+          const genAI = getGeminiClient();
+          const model = genAI.getGenerativeModel({ model: activeModelName });
+
+          const prompt = `Você é um especialista em SEO e Marketing no Pinterest para salões de beleza de alto padrão.
+Crie um Pin de alta atração visual e cliques para o seguinte procedimento:
+- Procedimento: ${procedure || 'Transformação Capilar'}
+- Categoria: ${service || 'Cabelos & Beleza'}
+- Tom: ${tone || 'Elegante e Inspirador'}
+
+Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
+{
+  "pinTitle": "Título chamativo e rico em palavras-chave para busca no Pinterest (máx 80 caracteres)",
+  "pinDescription": "Descrição rica em SEO explicando o procedimento, benefícios e chamada para salvar na pasta de inspirações (200-350 caracteres)",
+  "overlayText": "Texto curto e impactante para colocar sobre a foto na proporção 2:3",
+  "boardSuggestion": "Nome da pasta recomendada para salvar no Pinterest",
+  "seoKeywords": ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4", "palavra-chave 5"]
+}`;
+
+          const result = await model.generateContent(prompt);
+          const rawText = result.response.text().trim();
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+          }
+        } catch (geminiError) {
+          console.warn('Gemini pinterest error, fallback:', geminiError);
+        }
+      }
+
+      // Fallback
+      return NextResponse.json({
+        success: true,
+        data: {
+          pinTitle: `${procedure || 'Morena Iluminada'}: Guia Completo e Inspirações ✨`,
+          pinDescription: `Buscando a transformação perfeita para seus cabelos? Conheça nossa técnica de ${procedure || 'Morena Iluminada'} com preservação da fibra e brilho espelhado no salão. Salve este Pin na sua pasta de inspirações e agende seu horário em Campinas!`,
+          overlayText: `${(procedure || 'MORENA ILUMINADA').toUpperCase()} • TENDÊNCIA SALÃO`,
+          boardSuggestion: 'Cabelos dos Sonhos & Inspirações',
+          seoKeywords: [
+            `${procedure?.toLowerCase() || 'morena iluminada'}`,
+            'cabelos de luxo',
+            'salao campinas',
+            'mechas saudaveis',
+            'corte e cor',
+          ],
+        },
+        source: 'template',
+      });
+    }
+
+    if (agentType === 'google-business') {
+      const { procedure, service, branch } = body;
+      if (hasValidKey) {
+        try {
+          const genAI = getGeminiClient();
+          const model = genAI.getGenerativeModel({ model: activeModelName });
+
+          const prompt = `Você é um especialista em SEO Local e Perfil da Empresa no Google (Google Meu Negócio) para salões de beleza de alto padrão em Campinas-SP.
+Gere uma publicação semanal otimizada para o Google Maps / Google Meu Negócio:
+- Procedimento / Destaque: ${procedure || 'Especialista em Mechas e Loiros'}
+- Categoria: ${service || 'Cabelos & Estética'}
+- Unidade: ${branch || 'Barão Geraldo • Campinas'}
+
+Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
+{
+  "postTitle": "Título com localização e procedimento (ex: Especialista em Mechas em Campinas)",
+  "postContent": "Texto direto e confiável de 150 a 300 palavras, com prova técnica, acolhimento e menção à unidade física para ranquear no Google Maps",
+  "ctaType": "Agendar Agora ou Ligar",
+  "localKeywords": ["salao de beleza campinas", "mechas barao geraldo", "cabeleireiro cambui", "salao proximo a mim"]
+}`;
+
+          const result = await model.generateContent(prompt);
+          const rawText = result.response.text().trim();
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+          }
+        } catch (geminiError) {
+          console.warn('Gemini google business error, fallback:', geminiError);
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          postTitle: `Especialista em ${procedure || 'Transformação Capilar'} • ${branch || 'Barão Geraldo, Campinas'}`,
+          postContent: `Procurando o melhor resultado em ${procedure || 'mechas e cuidados capilares'} em Campinas?\n\nNossa equipe conta com consultoria personalizada e protocolos exclusivos para garantir fios luminosos, sedosos e saudáveis.\n\n📍 Atendimento com hora marcada em nossa unidade.\n☕ Estacionamento próprio e ambiente climatizado.\n\nClique no botão abaixo para garantir seu horário pelo WhatsApp!`,
+          ctaType: 'Agendar Agora',
+          localKeywords: [
+            'salao de beleza campinas',
+            'mechas barao geraldo',
+            'salao cambui campinas',
+            'morena iluminada campinas',
+          ],
+        },
+        source: 'template',
+      });
+    }
+
+    if (agentType === 'meta-ads') {
+      const { procedure, service, offerText } = body;
+      if (hasValidKey) {
+        try {
+          const genAI = getGeminiClient();
+          const model = genAI.getGenerativeModel({ model: activeModelName });
+
+          const prompt = `Você é um gestor de tráfego pago e copywriter especialista em anúncios patrocinados no Instagram e Facebook (Meta Ads) para salões de alto padrão.
+Gere um anúncio completo para atração de novas clientes locais:
+- Procedimento: ${procedure || 'Morena Iluminada'}
+- Serviço: ${service || 'Cabelos'}
+- Oferta / Diferencial: ${offerText || 'Consulta visagista inclusa e diagnóstico capilar'}
+
+Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
+{
+  "headline": "Título curto do anúncio com emojis moderados (máx 45 caracteres)",
+  "primaryText": "Texto principal persuasivo: gancho inicial + identificação da dor + solução no salão + chamada de ação clara",
+  "hook": "Gancho de abertura de 1 frase para prender a rolagem do feed",
+  "callToAction": "Enviar Mensagem no WhatsApp ou Agendar",
+  "audienceTargeting": {
+    "location": "Campinas-SP (Raio de 4km a 7km das unidades)",
+    "gender": "Mulheres",
+    "ageRange": "25 a 54 anos",
+    "interests": "Beleza, Cuidados com cabelos, Moda, Bem-estar"
+  },
+  "suggestedBudget": "R$ 15,00 a R$ 25,00 / dia para 15 a 30 contatos no WhatsApp"
+}`;
+
+          const result = await model.generateContent(prompt);
+          const rawText = result.response.text().trim();
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+          }
+        } catch (geminiError) {
+          console.warn('Gemini meta ads error, fallback:', geminiError);
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          headline: `Transforme seu visual em Campinas ✨`,
+          primaryText: `Cansada de mechas que deixam os fios ressecados? Conheça a técnica personalizada de ${procedure || 'Morena Iluminada'} que virou sensação em Campinas!\n\nPreservamos 100% da integridade da fibra capilar com ativos nobres e consultoria de cor sob medida para seu tom de pele.\n\n✨ Ganhe diagnóstico capilar completo no seu primeiro agendamento.\n\nToque no botão e converse diretamente com nossos especialistas pelo WhatsApp!`,
+          hook: `Mulheres de Campinas: o cabelo iluminado e saudável que você sempre quis!`,
+          callToAction: 'Enviar Mensagem no WhatsApp',
+          audienceTargeting: {
+            location: 'Campinas - SP (Raio de 5km de Barão Geraldo e Cambuí)',
+            gender: 'Mulheres',
+            ageRange: '24 a 52 anos',
+            interests: 'Salões de beleza, Morena Iluminada, Loiro, Cuidados com o cabelo',
+          },
+          suggestedBudget: 'R$ 15 a R$ 20 / dia (estimativa de 20 a 40 leads/mês)',
+        },
+        source: 'template',
+      });
+    }
+
+    if (agentType === 'interactive-stories') {
+      const { procedure, service } = body;
+      if (hasValidKey) {
+        try {
+          const genAI = getGeminiClient();
+          const model = genAI.getGenerativeModel({ model: activeModelName });
+
+          const prompt = `Você é um estrategista de conteúdo para Instagram Stories de salões de beleza de alto padrão.
+Crie 3 ideias práticas e altamente engajantes de Stories Interativos com stickers (Enquete, Caixa de Pergunta e Quiz) para o procedimento ${procedure || 'Transformação no salão'}:
+
+Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
+{
+  "stories": [
+    {
+      "type": "ENQUETE",
+      "title": "Duelo de Escolhas",
+      "visualDescription": "O que filmar ou fotografar no salão para o fundo do story",
+      "stickerText": "Pergunta da enquete",
+      "optionA": "Opção 1 com emoji",
+      "optionB": "Opção 2 com emoji",
+      "engagementGoal": "Por que esse story esquenta o algoritmo e atrai clientes"
+    },
+    {
+      "type": "CAIXA_PERGUNTAS",
+      "title": "Consultoria Aberta",
+      "visualDescription": "Profissional na bancada ou segurando produto de tratamento",
+      "stickerText": "Chamada para a caixinha",
+      "optionA": "",
+      "optionB": "",
+      "engagementGoal": "Gerar conversas no direct para agendamento"
+    },
+    {
+      "type": "QUIZ",
+      "title": "Mito ou Verdade",
+      "visualDescription": "Cabelo balançando em câmera lenta",
+      "stickerText": "Pergunta do quiz",
+      "optionA": "Verdade ✨",
+      "optionB": "Mito ❌",
+      "engagementGoal": "Educar a cliente e quebrar objeções de tratamento"
+    }
+  ]
+}`;
+
+          const result = await model.generateContent(prompt);
+          const rawText = result.response.text().trim();
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+          }
+        } catch (geminiError) {
+          console.warn('Gemini stories error, fallback:', geminiError);
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          stories: [
+            {
+              type: 'ENQUETE',
+              title: 'Duelo de Tons de Mechas',
+              visualDescription: 'Foto dividida mostrando nuance Mel Dourado à esquerda e nuance Avelã à direita.',
+              stickerText: 'Qual tom combina mais com a sua personalidade neste outono?',
+              optionA: 'Mel Dourado 🍯',
+              optionB: 'Avelã Quente 🤎',
+              engagementGoal: 'Mais de 65% de taxa de votação, ativando o algoritmo do Instagram.',
+            },
+            {
+              type: 'CAIXA_PERGUNTAS',
+              title: 'Tire suas Dúvidas com o Especialista',
+              visualDescription: 'Vídeo rápido de 5s no lavatório ou bancada com luz acolhedora.',
+              stickerText: 'Qual o seu maior medo na hora de clarear os fios?',
+              optionA: '',
+              optionB: '',
+              engagementGoal: 'Responda as caixinhas citando o nome da cliente e oferecendo o link da bio.',
+            },
+            {
+              type: 'QUIZ',
+              title: 'Diagnóstico Rápido de Saúde Capilar',
+              visualDescription: 'Close nos fios tratados com brilho espelhado.',
+              stickerText: 'O cabelo precisa de acidificação capilar logo após descolorir?',
+              optionA: 'Sim! É obrigatório ✨',
+              optionB: 'Não faz diferença ❌',
+              engagementGoal: 'Gera autoridade imediata e desejo de realizar o tratamento no salão.',
+            },
+          ],
+        },
+        source: 'template',
+      });
+    }
+
     return NextResponse.json({ error: 'Tipo de agente inválido' }, { status: 400 });
   } catch (error) {
     console.error('AI agent API error:', error);
