@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Allow server-side packages
+  serverExternalPackages: ['sharp', 'bcryptjs'],
 };
 
 export default nextConfig;
