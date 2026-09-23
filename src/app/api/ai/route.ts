@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getGeminiClient, getGeminiApiKey, activeModelName } from '@/lib/gemini';
+import { getGeminiClient, getGeminiApiKey, generateContentWithFallback } from '@/lib/gemini';
 
 // Intelligent Fallback generators for Beauty Salon Marketing
 function getFallbackCopywriting(service: string, procedure: string, tone: string, goal: string) {
@@ -105,7 +105,6 @@ export async function POST(request: NextRequest) {
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um copywriter de elite especialista em marketing digital para salões de beleza e estética de alto padrão.
 Gere um post completo para Instagram e Facebook para o seguinte serviço:
@@ -123,12 +122,11 @@ Estruture a resposta EXATAMENTE no seguinte formato JSON (sem formatação markd
   "previewHooks": ["gancho 1", "gancho 2", "gancho 3"]
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini copywriting call error, fallback:', geminiError);
@@ -149,7 +147,6 @@ Estruture a resposta EXATAMENTE no seguinte formato JSON (sem formatação markd
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um diretor de conteúdo para redes sociais de salões de beleza.
 Crie um plano semanal de 5 ideias de posts inovadores para atrair e reter clientes no salão:
@@ -168,12 +165,11 @@ Retorne EXATAMENTE um array JSON de 5 objetos no formato:
   }
 ]`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\[[\s\S]*\]/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini ideas error, fallback:', geminiError);
@@ -225,7 +221,6 @@ Retorne EXATAMENTE um array JSON de 5 objetos no formato:
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um diretor criativo de vídeos virais de beleza para TikTok e Instagram Reels de salões de alto padrão.
 Crie um roteiro completo e post para a seguinte tendência do TikTok Creative Center Brasil:
@@ -249,12 +244,11 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "soundTip": "Dica de como usar o áudio em alta para dobrar a entrega do algoritmo"
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini tiktok trend error, fallback:', geminiError);
@@ -297,7 +291,6 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um especialista em SEO e Marketing no Pinterest para salões de beleza de alto padrão.
 Crie um Pin de alta atração visual e cliques para o seguinte procedimento:
@@ -314,12 +307,11 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "seoKeywords": ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4", "palavra-chave 5"]
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini pinterest error, fallback:', geminiError);
@@ -351,7 +343,6 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um especialista em SEO Local e Perfil da Empresa no Google (Google Meu Negócio) para salões de beleza de alto padrão em Campinas-SP.
 Gere uma publicação semanal otimizada para o Google Maps / Google Meu Negócio:
@@ -367,12 +358,11 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "localKeywords": ["salao de beleza campinas", "mechas barao geraldo", "cabeleireiro cambui", "salao proximo a mim"]
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini google business error, fallback:', geminiError);
@@ -401,7 +391,6 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um gestor de tráfego pago e copywriter especialista em anúncios patrocinados no Instagram e Facebook (Meta Ads) para salões de alto padrão.
 Gere um anúncio completo para atração de novas clientes locais:
@@ -424,12 +413,11 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "suggestedBudget": "R$ 15,00 a R$ 25,00 / dia para 15 a 30 contatos no WhatsApp"
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini meta ads error, fallback:', geminiError);
@@ -460,7 +448,6 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
       if (hasValidKey) {
         try {
           const genAI = getGeminiClient();
-          const model = genAI.getGenerativeModel({ model: activeModelName });
 
           const prompt = `Você é um estrategista de conteúdo para Instagram Stories de salões de beleza de alto padrão.
 Crie 3 ideias práticas e altamente engajantes de Stories Interativos com stickers (Enquete, Caixa de Pergunta e Quiz) para o procedimento ${procedure || 'Transformação no salão'}:
@@ -498,12 +485,11 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   ]
 }`;
 
-          const result = await model.generateContent(prompt);
-          const rawText = result.response.text().trim();
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini', model: modelUsed });
           }
         } catch (geminiError) {
           console.warn('Gemini stories error, fallback:', geminiError);
