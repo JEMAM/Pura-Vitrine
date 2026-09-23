@@ -16,7 +16,14 @@ import {
   Tag,
   Scissors,
   CheckCircle2,
+  Flame,
+  ExternalLink,
+  TrendingUp,
+  Music,
+  ArrowRight,
+  Sparkle,
 } from 'lucide-react';
+import { TIKTOK_BEAUTY_TRENDS, TikTokTrend } from '@/lib/tiktok-trends';
 
 interface CopyResult {
   caption: string;
@@ -49,7 +56,7 @@ interface CurationResult {
 
 export default function AIPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'copy' | 'ideas' | 'curation' | 'strategy'>('copy');
+  const [activeTab, setActiveTab] = useState<'copy' | 'ideas' | 'trends' | 'curation' | 'strategy'>('copy');
 
   // Copywriting state
   const [service, setService] = useState('Cabelo');
@@ -66,6 +73,14 @@ export default function AIPage() {
   const [ideaFocus, setIdeaFocus] = useState('Cabelos e Mechas');
   const [generatingIdeas, setGeneratingIdeas] = useState(false);
   const [ideasResult, setIdeasResult] = useState<IdeaItem[] | null>(null);
+
+  // TikTok Trends state
+  const [selectedTrendCategory, setSelectedTrendCategory] = useState<string>('all');
+  const [searchTrend, setSearchTrend] = useState<string>('');
+  const [activeTrendModal, setActiveTrendModal] = useState<TikTokTrend | null>(null);
+  const [generatingTrendScript, setGeneratingTrendScript] = useState(false);
+  const [trendScriptResult, setTrendScriptResult] = useState<any>(null);
+  const [copiedScript, setCopiedScript] = useState(false);
 
   // Curation state
   const [generatingCuration, setGeneratingCuration] = useState(false);
@@ -183,6 +198,60 @@ export default function AIPage() {
     router.push('/dashboard/posts');
   };
 
+  const handleGenerateTrendScript = async (trend: TikTokTrend) => {
+    setActiveTrendModal(trend);
+    setGeneratingTrendScript(true);
+    setTrendScriptResult(null);
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentType: 'tiktok-trend',
+          trendName: trend.name,
+          hashtag: trend.hashtag,
+          suggestedHook: trend.suggestedHook,
+          videoFormat: trend.videoFormat,
+          soundtrackSuggestion: trend.soundtrackSuggestion,
+        }),
+      });
+      const data = await res.json();
+      if (data.data) {
+        setTrendScriptResult(data.data);
+      }
+    } catch (err) {
+      console.error('TikTok script error:', err);
+    } finally {
+      setGeneratingTrendScript(false);
+    }
+  };
+
+  const handleSendTrendToEditor = (trend: TikTokTrend, scriptData?: any) => {
+    sessionStorage.setItem(
+      'draft_from_ai',
+      JSON.stringify({
+        caption:
+          scriptData?.caption ||
+          `A tendência ${trend.name} que conquistou o TikTok agora com o padrão de excelência do nosso salão! ✨🤎\n\n${trend.description}\n\nAgende seu horário pelo link da bio!`,
+        hashtags:
+          scriptData?.hashtags ||
+          `${trend.hashtag} #salaodebeleza #salaocampinas #cabelosdeluxo #beautytok`,
+        cta: scriptData?.cta || 'Agende seu horário pelo WhatsApp no link da bio!',
+      })
+    );
+    router.push(`/dashboard/posts?prompt=${encodeURIComponent(trend.name + ' - ' + trend.suggestedHook)}&mode=ai`);
+  };
+
+  const filteredTrends = TIKTOK_BEAUTY_TRENDS.filter((t) => {
+    const matchesCategory = selectedTrendCategory === 'all' || t.category === selectedTrendCategory;
+    const matchesSearch =
+      !searchTrend ||
+      t.name.toLowerCase().includes(searchTrend.toLowerCase()) ||
+      t.hashtag.toLowerCase().includes(searchTrend.toLowerCase()) ||
+      t.description.toLowerCase().includes(searchTrend.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="ai-page max-w-[1360px] mx-auto w-full px-4 lg:px-8">
       {/* Header */}
@@ -215,6 +284,16 @@ export default function AIPage() {
         >
           <Lightbulb size={16} />
           Ideias & Cronograma
+        </button>
+        <button
+          className={`ai-tab-btn ${activeTab === 'trends' ? 'active' : ''}`}
+          onClick={() => setActiveTab('trends')}
+        >
+          <Flame size={16} className="text-rose-500" />
+          <span>Tendências TikTok</span>
+          <span className="ml-1 text-[10px] font-bold uppercase tracking-wider bg-rose-500 text-white px-1.5 py-0.5 rounded-full">
+            CREATIVE CENTER
+          </span>
         </button>
         <button
           className={`ai-tab-btn ${activeTab === 'curation' ? 'active' : ''}`}
@@ -539,6 +618,256 @@ export default function AIPage() {
                 'Grave vídeos curtos de 3 segundos balançando os fios na luz natural para publicar nos Stories.'}
             </p>
           </div>
+        </div>
+      )}
+
+      {/* TAB 3: TIKTOK CREATIVE CENTER TRENDS */}
+      {activeTab === 'trends' && (
+        <div className="trends-container flex flex-col gap-6">
+          {/* Header Banner */}
+          <div className="p-6 bg-gradient-to-r from-rose-950/20 via-surface-container-low to-amber-950/10 border border-outline-variant/30 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                <Flame size={26} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-xl font-bold text-on-surface">TikTok Creative Center • Brasil</h2>
+                  <span className="text-xs bg-rose-500 text-white font-semibold px-2 py-0.5 rounded-full">
+                    Cabelos & Cosméticos
+                  </span>
+                </div>
+                <p className="text-sm text-on-surface-variant mt-1">
+                  Hashtags virais, procedimentos em alta no mercado nacional e formatos de vídeo monitorados no TikTok e Reels para salões de alto padrão.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/pt?countryCode=BR"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-lowest hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-all border border-outline-variant/30 shadow-sm shrink-0"
+            >
+              <span>Abrir Creative Center Oficial</span>
+              <ExternalLink size={14} />
+            </a>
+          </div>
+
+          {/* Filter Pills and Search */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: 'all', label: 'Todas as Trends' },
+                { id: 'cabelo', label: '💇‍♀️ Cabelos & Mechas' },
+                { id: 'cosmeticos', label: '🧴 Cosméticos & Skincare' },
+                { id: 'unhas', label: '💅 Unhas & Estética' },
+                { id: 'audios', label: '🎵 Áudios Virais' },
+              ].map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedTrendCategory(category.id)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                    selectedTrendCategory === category.id
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                  }`}
+                >
+                  <span>{category.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <input
+              type="text"
+              placeholder="Buscar tendência ou hashtag..."
+              value={searchTrend}
+              onChange={(e) => setSearchTrend(e.target.value)}
+              className="px-3.5 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/30 text-xs text-on-surface focus:outline-none focus:ring-1 focus:ring-primary w-full sm:w-64"
+            />
+          </div>
+
+          {/* Trends Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredTrends.map((trend) => (
+              <div
+                key={trend.id}
+                className="p-5 bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"
+              >
+                <div className="flex flex-col gap-3">
+                  {/* Top badges */}
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${trend.badgeColor}`}>
+                      {trend.badge} • {trend.growth}
+                    </span>
+                    <span className="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+                      <TrendingUp size={13} className="text-emerald-500" />
+                      {trend.views}
+                    </span>
+                  </div>
+
+                  {/* Title & Hashtag */}
+                  <div>
+                    <h3 className="text-base font-bold text-on-surface group-hover:text-primary transition-colors">
+                      {trend.name}
+                    </h3>
+                    <span className="text-xs font-semibold text-primary">{trend.hashtag}</span>
+                  </div>
+
+                  <p className="text-xs text-on-surface-variant line-clamp-2">{trend.description}</p>
+
+                  {/* Hook Box */}
+                  <div className="bg-surface-container-low p-3 rounded-xl border border-outline-variant/20">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 uppercase tracking-wider mb-1">
+                      <Flame size={12} />
+                      Gancho Viral de 3s (Hook)
+                    </div>
+                    <p className="text-xs text-on-surface italic font-medium">"{trend.suggestedHook}"</p>
+                  </div>
+
+                  {/* Audio & Video Format */}
+                  <div className="flex flex-wrap gap-2 text-[11px] text-on-surface-variant">
+                    <span className="bg-surface-container-highest px-2 py-0.5 rounded-md font-medium">
+                      📹 {trend.videoFormat}
+                    </span>
+                    {trend.soundtrackSuggestion && (
+                      <span className="bg-surface-container-highest px-2 py-0.5 rounded-md font-medium truncate max-w-[200px]" title={trend.soundtrackSuggestion}>
+                        🎵 {trend.soundtrackSuggestion}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-3 border-t border-outline-variant/20 flex items-center gap-2">
+                  <button
+                    onClick={() => handleGenerateTrendScript(trend)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-primary-container text-on-primary-container text-xs font-semibold hover:opacity-95 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <Wand2 size={14} />
+                    <span>Gerar Roteiro IA</span>
+                  </button>
+                  <button
+                    onClick={() => handleSendTrendToEditor(trend)}
+                    title="Criar post no editor"
+                    className="p-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-colors"
+                  >
+                    <ArrowRight size={15} />
+                  </button>
+                  <a
+                    href={trend.creativeCenterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Ver no Creative Center Oficial"
+                    className="p-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface transition-colors"
+                  >
+                    <ExternalLink size={15} />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Script Drawer / Modal */}
+          {activeTrendModal && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-surface border border-outline-variant/30 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl flex flex-col gap-4">
+                <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                  <div>
+                    <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+                      TikTok Creative Center • Roteiro Gerado
+                    </span>
+                    <h3 className="text-lg font-bold text-on-surface">{activeTrendModal.name}</h3>
+                  </div>
+                  <button
+                    onClick={() => setActiveTrendModal(null)}
+                    className="p-1 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface text-lg leading-none"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {generatingTrendScript ? (
+                  <div className="py-12 flex flex-col items-center justify-center gap-3">
+                    <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+                    <p className="text-sm text-on-surface-variant">
+                      Criando roteiro com gancho viral, cenas cronometradas e legenda com IA...
+                    </p>
+                  </div>
+                ) : trendScriptResult ? (
+                  <div className="flex flex-col gap-4">
+                    {/* Gancho */}
+                    <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl">
+                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider block mb-1">
+                        🎯 Gancho de Retenção (0 a 3 segundos)
+                      </span>
+                      <p className="text-sm font-semibold text-on-surface">{trendScriptResult.hook}</p>
+                    </div>
+
+                    {/* Roteiro por segundo */}
+                    <div>
+                      <span className="text-xs font-bold text-on-surface uppercase tracking-wider block mb-2">
+                        🎬 Roteiro do Vídeo (Passo a Passo)
+                      </span>
+                      <div className="flex flex-col gap-2">
+                        {trendScriptResult.scriptOutline?.map((scene: any, idx: number) => (
+                          <div key={idx} className="p-3 bg-surface-container-low rounded-xl text-xs flex flex-col gap-1 border border-outline-variant/10">
+                            <span className="font-bold text-primary">{scene.time}</span>
+                            <div><strong>Visual:</strong> {scene.visual}</div>
+                            <div><strong>Áudio/Fala:</strong> {scene.audio}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Dica de Áudio */}
+                    {trendScriptResult.soundTip && (
+                      <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs">
+                        <strong className="text-amber-700 block mb-0.5">🎵 Dica de Trilha Sonora:</strong>
+                        <span className="text-on-surface-variant">{trendScriptResult.soundTip}</span>
+                      </div>
+                    )}
+
+                    {/* Legenda Pronta */}
+                    <div>
+                      <span className="text-xs font-bold text-on-surface uppercase tracking-wider block mb-1">
+                        ✍️ Legenda Pronta com Hashtags
+                      </span>
+                      <div className="p-3.5 bg-surface-container-low rounded-xl text-xs whitespace-pre-wrap text-on-surface border border-outline-variant/20 font-body">
+                        {trendScriptResult.caption}
+                        {'\n\n'}
+                        <span className="text-primary font-semibold">{trendScriptResult.hashtags}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pt-2 flex items-center justify-end gap-3 border-t border-outline-variant/20">
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            `GANCHO: ${trendScriptResult.hook}\n\nROTEIRO:\n${trendScriptResult.scriptOutline?.map((s: any) => `${s.time} - ${s.visual} | ${s.audio}`).join('\n')}\n\nLEGENDA:\n${trendScriptResult.caption}\n\n${trendScriptResult.hashtags}`
+                          );
+                          setCopiedScript(true);
+                          setTimeout(() => setCopiedScript(false), 2000);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold transition-all flex items-center gap-1.5"
+                      >
+                        {copiedScript ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                        <span>{copiedScript ? 'Copiado!' : 'Copiar Roteiro'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleSendTrendToEditor(activeTrendModal, trendScriptResult)}
+                        className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:opacity-95 transition-all flex items-center gap-1.5 shadow-sm"
+                      >
+                        <span>Abrir no Editor de Post</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

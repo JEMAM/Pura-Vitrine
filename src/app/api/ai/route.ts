@@ -219,6 +219,79 @@ Retorne EXATAMENTE um array JSON de 5 objetos no formato:
       });
     }
 
+    if (agentType === 'tiktok-trend') {
+      const { trendName, hashtag, suggestedHook, videoFormat, soundtrackSuggestion } = body;
+
+      if (hasValidKey) {
+        try {
+          const genAI = getGeminiClient();
+          const model = genAI.getGenerativeModel({ model: activeModelName });
+
+          const prompt = `Você é um diretor criativo de vídeos virais de beleza para TikTok e Instagram Reels de salões de alto padrão.
+Crie um roteiro completo e post para a seguinte tendência do TikTok Creative Center Brasil:
+- Tendência: ${trendName || 'Tendência de Cabelo / Beleza'}
+- Hashtag em alta: ${hashtag || '#hairtok'}
+- Gancho sugerido: ${suggestedHook || 'Veja essa transformação'}
+- Formato recomendado: ${videoFormat || 'Reels / TikTok'}
+- Trilha sugerida: ${soundtrackSuggestion || 'Áudio viral de transição'}
+
+Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
+{
+  "hook": "Gancho verbal e visual para prender a atenção nos primeiros 3 segundos",
+  "scriptOutline": [
+    { "time": "0:00 - 0:03", "visual": "O que filmar na tela", "audio": "Fala ou áudio de impacto" },
+    { "time": "0:04 - 0:15", "visual": "Passo a passo / processo no salão", "audio": "Explicação técnica simplificada do diferencial" },
+    { "time": "0:16 - 0:30", "visual": "Revelação / balanço dos fios e brilho espelhado", "audio": "Resultado deslumbrante e convite para agendar" }
+  ],
+  "caption": "Legenda completa para o post no Instagram/TikTok com quebras de linha e tom sofisticado",
+  "cta": "Chamada para ação focada em agendamento no WhatsApp ou bio",
+  "hashtags": "${hashtag} #salaodebeleza #salaocampinas #cabelosdeluxo #beautytokbrasil #transformacaocapilar",
+  "soundTip": "Dica de como usar o áudio em alta para dobrar a entrega do algoritmo"
+}`;
+
+          const result = await model.generateContent(prompt);
+          const rawText = result.response.text().trim();
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const parsed = JSON.parse(jsonMatch[0]);
+            return NextResponse.json({ success: true, data: parsed, source: 'gemini' });
+          }
+        } catch (geminiError) {
+          console.warn('Gemini tiktok trend error, fallback:', geminiError);
+        }
+      }
+
+      // Fallback
+      return NextResponse.json({
+        success: true,
+        data: {
+          hook: suggestedHook || `O procedimento que está dominando o feed: ${trendName}! ✨`,
+          scriptOutline: [
+            {
+              time: '0:00 - 0:03',
+              visual: 'Close no cabelo antes ou cliente olhando surpresa para a câmera.',
+              audio: suggestedHook || `Você sabia o poder do ${trendName}?`,
+            },
+            {
+              time: '0:04 - 0:15',
+              visual: 'Aplicação cuidadosa na bancada, textura do produto e lavatório relaxante.',
+              audio: `Aqui no salão personalizamos cada etapa para manter a integridade dos fios.`,
+            },
+            {
+              time: '0:16 - 0:30',
+              visual: 'Movimento em câmera lenta, cliente sorrindo e balanço do cabelo ao vento.',
+              audio: 'O resultado fala por si! Agende pelo link da nossa bio.',
+            },
+          ],
+          caption: `A tendência ${trendName} que conquistou o TikTok agora com a assinatura de sofisticação do nosso salão! ✨🤎\n\nPreservando a saúde da fibra capilar com ativos nobres e acabamento impecável.\n\nPronta para renovar seu visual?`,
+          cta: 'Envie uma mensagem no direct ou clique no link da bio para garantir seu horário!',
+          hashtags: `${hashtag || '#hairtok'} #salaodebeleza #salaocampinas #morenailuminada #cabelosluxuosos #beautytok`,
+          soundTip: `Use o áudio sugerido "${soundtrackSuggestion || 'Áudio Viral de Beleza'}" no Reels do Instagram com o volume da música em 40% e a sua voz em 100%.`,
+        },
+        source: 'template',
+      });
+    }
+
     return NextResponse.json({ error: 'Tipo de agente inválido' }, { status: 400 });
   } catch (error) {
     console.error('AI agent API error:', error);
