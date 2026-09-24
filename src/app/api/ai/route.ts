@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getGeminiClient, getGeminiApiKey, generateContentWithFallback } from '@/lib/gemini';
+import { getGeminiClient, getGeminiApiKey, generateContentWithFallback, getModelFallbackList } from '@/lib/gemini';
+import { memoryStore } from '@/lib/store';
 
 // Intelligent Fallback generators for Beauty Salon Marketing
 function getFallbackCopywriting(service: string, procedure: string, tone: string, goal: string) {
@@ -101,6 +102,43 @@ export async function POST(request: NextRequest) {
     const apiKey = getGeminiApiKey();
     const hasValidKey = apiKey && apiKey !== 'sua-chave-gemini-aqui';
 
+    // Retrieve active settings and preferred model (e.g. gemini-3.6-flash or gemini-3.7-flash)
+    const settings = memoryStore.getSettings();
+    const preferredModel = body.model || settings?.geminiModel || 'gemini-3.6-flash';
+    const modelList = getModelFallbackList(preferredModel);
+
+    // Instant Connection Ping Test
+    if (agentType === 'test-connection') {
+      if (!hasValidKey) {
+        return NextResponse.json(
+          { success: false, error: 'GEMINI_API_KEY não configurada no arquivo .env.local.' },
+          { status: 400 }
+        );
+      }
+      try {
+        const genAI = getGeminiClient();
+        const startTime = Date.now();
+        const { text, modelUsed } = await generateContentWithFallback(
+          genAI,
+          'Responda em uma frase curta confirmando a prontidão da IA para o Salão de Beleza.',
+          { models: modelList }
+        );
+        const latency = Date.now() - startTime;
+        return NextResponse.json({
+          success: true,
+          message: 'Conexão com a Google Gemini IA validada com sucesso!',
+          modelUsed,
+          latency: `${latency}ms`,
+          response: text,
+        });
+      } catch (testErr: any) {
+        return NextResponse.json(
+          { success: false, error: testErr?.message || 'Falha ao responder com o modelo Gemini.' },
+          { status: 500 }
+        );
+      }
+    }
+
     if (agentType === 'copywriting') {
       if (hasValidKey) {
         try {
@@ -122,7 +160,9 @@ Estruture a resposta EXATAMENTE no seguinte formato JSON (sem formatação markd
   "previewHooks": ["gancho 1", "gancho 2", "gancho 3"]
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -165,7 +205,9 @@ Retorne EXATAMENTE um array JSON de 5 objetos no formato:
   }
 ]`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\[[\s\S]*\]/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -244,7 +286,9 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "soundTip": "Dica de como usar o áudio em alta para dobrar a entrega do algoritmo"
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -307,7 +351,9 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "seoKeywords": ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4", "palavra-chave 5"]
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -358,7 +404,9 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "localKeywords": ["salao de beleza campinas", "mechas barao geraldo", "cabeleireiro cambui", "salao proximo a mim"]
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -413,7 +461,9 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   "suggestedBudget": "R$ 15,00 a R$ 25,00 / dia para 15 a 30 contatos no WhatsApp"
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
@@ -485,7 +535,9 @@ Retorne EXATAMENTE um objeto JSON (sem markdown ao redor) no formato:
   ]
 }`;
 
-          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt);
+          const { text: rawText, modelUsed } = await generateContentWithFallback(genAI, prompt, {
+            models: modelList,
+          });
           const jsonMatch = rawText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);

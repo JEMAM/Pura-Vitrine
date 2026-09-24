@@ -56,6 +56,7 @@ export interface SalonSettings {
   salonName: string;
   phone: string;
   instagram: string;
+  facebookPageName?: string;
   tone: string;
   targetAudience: string;
   services: string[];
@@ -63,6 +64,8 @@ export interface SalonSettings {
   instagramConnected: boolean;
   facebookConnected: boolean;
   geminiModel: string;
+  instagramAccountId?: string;
+  facebookPageId?: string;
 }
 
 // In-memory demo data with realistic beauty salon content
@@ -223,13 +226,16 @@ let salonSettings: SalonSettings = {
   salonName: 'Studio Beleza & Elegância',
   phone: '(11) 98765-4321',
   instagram: '@studiobelezasp',
+  facebookPageName: 'Studio Beleza & Elegância SP',
   tone: 'Elegante, acolhedor e focado em alta autoestima',
   targetAudience: 'Mulheres de 22 a 50 anos que valorizam cuidados pessoais e estética premium',
   services: ['Cabelos (Mechas, Cortes, Escova)', 'Unhas (Gel, Fibra, Esmaltação)', 'Estética Facial e Corporal', 'Sobrancelhas e Cílios'],
   professionals: ['Camila Rocha (Colorista)', 'Juliana Prado (Nail Designer)', 'Patrícia Mendes (Esteticista)'],
   instagramConnected: true,
   facebookConnected: true,
-  geminiModel: 'gemini-1.5-flash',
+  geminiModel: 'gemini-3.6-flash',
+  instagramAccountId: '',
+  facebookPageId: '',
 };
 
 // Global persistence across hot reload

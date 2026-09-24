@@ -1,9 +1,6 @@
 import { GoogleGenerativeAI, GenerationConfig } from '@google/generative-ai';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-
-// Force load .env.local with override: true so local key takes precedence over stale OS variables
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true });
+export { AVAILABLE_GEMINI_MODELS } from './gemini-models';
+export type { GeminiModelOption } from './gemini-models';
 
 export function getGeminiApiKey(): string {
   return process.env.GEMINI_API_KEY || '';
@@ -16,12 +13,19 @@ export function getGeminiClient(): GoogleGenerativeAI {
 
 export const FALLBACK_MODELS = [
   'gemini-3.6-flash',
-  'gemini-3.5-flash-lite',
+  'gemini-3.7-flash',
+  'gemini-3.5-flash',
   'gemini-3.1-flash-lite',
   'gemini-flash-latest',
 ];
 
 export const activeModelName = 'gemini-3.6-flash';
+
+export function getModelFallbackList(preferredModel?: string): string[] {
+  if (!preferredModel) return FALLBACK_MODELS;
+  const list = [preferredModel, ...FALLBACK_MODELS.filter((m) => m !== preferredModel)];
+  return Array.from(new Set(list));
+}
 
 export async function generateContentWithFallback(
   genAI: GoogleGenerativeAI,
