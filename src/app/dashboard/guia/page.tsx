@@ -22,9 +22,9 @@ export default function GuiaPage() {
     },
     {
       category: 'Chaves & APIs',
-      question: 'Preciso pagar para usar o TikTok Creative Center ou Pinterest Business?',
+      question: 'Preciso pagar ou ter chave de API para usar o Pinterest Business?',
       answer:
-        'Não! Ambos são recursos gratuitos para empresas. O TikTok Creative Center pode ser acessado livremente com uma conta comercial gratuita de anúncios, e o Pinterest Business permite criar pastas, perfis profissionais e agendar pins sem custo algum.',
+        'Não! O Pinterest Business é 100% gratuito e não exige chave de API de desenvolvedor. Toda a inteligência de títulos SEO, descrições ricas e sobreposição visual 2:3 é gerada automaticamente pelo Google Gemini (3.6 ou 3.7 Flash) integrado ao Pura Vitrine. Você publica gratuitamente pelo próprio app do Pinterest ou pelo painel web.',
     },
     {
       category: 'Chaves & APIs',
@@ -694,18 +694,23 @@ export default function GuiaPage() {
             </div>
 
             {/* SEÇÃO 3: PINTEREST BUSINESS */}
-            <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-4">
+            <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/15">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
                     3
                   </div>
                   <div>
-                    <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold flex items-center gap-2">
-                      Pinterest Business (Pins 2:3 &amp; Tráfego Orgânico de Longo Prazo)
-                    </h3>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold">
+                        Pinterest Business (Pins 2:3 &amp; Tráfego Orgânico de Longo Prazo)
+                      </h3>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        100% Gratuito • Não exige chave de API
+                      </span>
+                    </div>
                     <span className="text-xs text-on-surface-variant">
-                      O maior motor de busca visual do mundo para noivas, mechas, morena iluminada e unhas.
+                      O maior motor de busca visual do mundo para mechas, morena iluminada, noivas e unhas.
                     </span>
                   </div>
                 </div>
@@ -720,30 +725,68 @@ export default function GuiaPage() {
                 </a>
               </div>
 
+              {/* Comparativo de Impacto */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-rose-600 text-2xl">trending_up</span>
+                  <div>
+                    <h4 className="text-xs font-bold text-rose-950">Por que o Pinterest é uma Mina de Ouro para o seu Salão?</h4>
+                    <p className="text-[11px] text-rose-900 leading-relaxed mt-0.5">
+                      No <strong>Instagram</strong>, a vida útil de um post é de <strong>24 a 48 horas</strong>. No <strong>Pinterest</strong>, um Pin vertical bem indexado continua gerando visitas e pedidos no WhatsApp por <strong>6 a 18 meses</strong>, pois ele é indexado nas buscas do próprio Pinterest e do Google Imagens!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Passo a Passo Prático */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-on-surface-variant">
-                <div className="flex flex-col gap-2.5">
-                  <strong className="text-on-surface text-sm">Por que o Pinterest é uma Mina de Ouro para Salões:</strong>
-                  <p>
-                    Diferente do Instagram (onde um post morre em 48 horas), um Pin vertical no Pinterest continua gerando cliques e pedidos no WhatsApp por <strong>6 a 18 meses</strong> após a publicação, pois ele é indexado na busca orgânica.
-                  </p>
-                  <strong className="text-on-surface text-sm mt-1">Como Cadastrar Gratuitamente:</strong>
-                  <ol className="list-decimal pl-4 space-y-1.5">
-                    <li>Acesse <strong>pinterest.com/business/create</strong> e crie uma conta com o e-mail do salão.</li>
-                    <li>Preencha o nome comercial (ex: <em>Espaço Beauty &bull; Salão em Campinas</em>).</li>
-                    <li>Crie pastas temáticas: <em>&ldquo;Inspirações Morena Iluminada&rdquo;</em>, <em>&ldquo;Loiros &amp; Mechas&rdquo;</em>, <em>&ldquo;Penteados de Noiva&rdquo;</em>.</li>
-                  </ol>
+                {/* Etapa 1 e 2 */}
+                <div className="flex flex-col gap-3 p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">1</span>
+                    <strong className="text-on-surface text-sm">Criar Conta Comercial Gratuita</strong>
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1 text-on-surface-variant">
+                    <li>Acesse <strong>pinterest.com/business/create</strong> e cadastre o e-mail do salão.</li>
+                    <li>Defina o nome comercial (ex: <em>Studio Beleza &amp; Elegância • Especialista em Mechas</em>).</li>
+                    <li>No perfil, adicione sua <strong>cidade e bairro</strong> e coloque o link da bio apontando para o <strong>WhatsApp</strong>.</li>
+                  </ul>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
+                    <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">2</span>
+                    <strong className="text-on-surface text-sm">Organizar Pastas Estratégicas</strong>
+                  </div>
+                  <p className="text-[11px]">Crie pastas temáticas para o algoritmo entender o seu nicho:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="px-2 py-0.5 rounded-lg bg-surface text-[11px] border border-outline-variant/20 font-medium">📌 Morena Iluminada</span>
+                    <span className="px-2 py-0.5 rounded-lg bg-surface text-[11px] border border-outline-variant/20 font-medium">📌 Loiros Saudáveis</span>
+                    <span className="px-2 py-0.5 rounded-lg bg-surface text-[11px] border border-outline-variant/20 font-medium">📌 Unhas em Gel &amp; Nail Art</span>
+                    <span className="px-2 py-0.5 rounded-lg bg-surface text-[11px] border border-outline-variant/20 font-medium">📌 Noivas &amp; Penteados</span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2.5">
-                  <strong className="text-on-surface text-sm">Como Usar no Pura Vitrine:</strong>
-                  <p>
-                    No menu <strong>Inteligência Artificial &rarr; Expansão Multicanal &rarr; Pinterest 2:3</strong>:
-                  </p>
-                  <ul className="list-disc pl-4 space-y-1 text-on-surface">
-                    <li>O sistema gera 3 ideias de Pins no formato padrão vertical <strong>2:3 (1000 x 1500 px)</strong>.</li>
-                    <li>Gera o <strong>Texto de Sobreposição (Overlay)</strong> para você estampar sobre a foto no Canva ou no editor.</li>
-                    <li>Cria o <strong>Título SEO</strong> e a <strong>Descrição Rica em Palavras-chave</strong> que as clientes pesquisam antes de marcar horário.</li>
+                {/* Etapa 3 e 4 */}
+                <div className="flex flex-col gap-3 p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">3</span>
+                    <strong className="text-on-surface text-sm">Gerar Conteúdo no Pura Vitrine</strong>
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1 text-on-surface-variant">
+                    <li>No menu <strong>Inteligência Artificial &rarr; Expansão Multicanal &rarr; Pinterest 2:3</strong>.</li>
+                    <li>Digite o procedimento (ex: <em>Morena Iluminada Doce de Leite</em>) e clique em <strong>Gerar</strong>.</li>
+                    <li>A IA (Gemini 3.6/3.7) gera o <strong>Título SEO</strong>, a <strong>Descrição com Palavras-Chave</strong>, o <strong>Texto de Sobreposição (Overlay)</strong> e a <strong>Pasta Recomendada</strong>.</li>
                   </ul>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-outline-variant/10">
+                    <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">4</span>
+                    <strong className="text-on-surface text-sm">Publicar com o Link de Agendamento</strong>
+                  </div>
+                  <p className="text-[11px]">
+                    Suba a foto na vertical <strong>2:3 (1000 x 1500 px)</strong>, cole os textos gerados e coloque no campo <strong>Link de Destino</strong> o link do WhatsApp:
+                  </p>
+                  <div className="p-2.5 rounded-lg bg-surface border border-outline-variant/20 font-mono text-[10px] text-primary break-all select-all">
+                    https://wa.me/55SEUNUMERO?text=Ola!+Vi+seu+Pin+no+Pinterest+e+quero+agendar
+                  </div>
                 </div>
               </div>
             </div>
