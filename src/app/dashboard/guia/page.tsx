@@ -33,6 +33,18 @@ export default function GuiaPage() {
         'No painel da Vercel (vercel.com), acesse o seu projeto -> Settings -> Environment Variables. Adicione a variável GEMINI_API_KEY com a sua chave copiada do Google AI Studio e faça um novo Deploy. Assim, todos os computadores e celulares da equipe terão acesso instantâneo às gerações de IA.',
     },
     {
+      category: 'Vídeos & Edição com IA',
+      question: 'Posso usar vídeos no aplicativo e como faço para editar com IA?',
+      answer:
+        'Sim! A plataforma suporta upload de vídeos (.mp4, .mov, .webm) de até 50MB na Biblioteca de Mídia para agendamento em Reels, TikTok e Feed. Para a edição inteligente do vídeo, a IA do Pura Vitrine (Google Gemini) cria o roteiro cronometrado de 3s a 30s com gancho e áudios em alta. Para a edição do vídeo gravado, recomendamos ferramentas gratuitas de IA parceiras como o CapCut (para legendas automáticas animadas com 1 clique e redutor de ruído de secador) ou o Opus Clip (para cortes automáticos em 9:16).',
+    },
+    {
+      category: 'Vídeos & Edição com IA',
+      question: 'Qual é o formato ideal e o fluxo perfeito de gravação para salões?',
+      answer:
+        'O formato obrigatório para Reels e TikTok é a proporção vertical 9:16 (1080 x 1920 px) com duração recomendada de 15 a 30 segundos. O fluxo de maior sucesso é: 1) Gerar o roteiro no Pura Vitrine; 2) Gravar apenas 3 clipes curtos no celular com ring light (Antes de 2s, Processo de 6s e Revelação em câmera lenta de 5s); 3) No CapCut, aplicar Legendas Automáticas IA e Redutor de Ruído; 4) Fazer upload no Pura Vitrine e agendar o post.',
+    },
+    {
       category: 'TikTok & Tendências',
       question: 'Como o TikTok Creative Center ajuda a atrair mais clientes para o salão?',
       answer:
@@ -693,12 +705,125 @@ export default function GuiaPage() {
               </div>
             </div>
 
-            {/* SEÇÃO 3: PINTEREST BUSINESS */}
+            {/* SEÇÃO 3: PRODUÇÃO & EDIÇÃO DE VÍDEOS COM IA */}
+            <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/15">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                    3
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold">
+                        Produção &amp; Edição de Vídeos com IA (Reels, TikTok &amp; Shorts 9:16)
+                      </h3>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300">
+                        CapCut IA + Pura Vitrine + Roteiros 9:16
+                      </span>
+                    </div>
+                    <span className="text-xs text-on-surface-variant">
+                      Grave vídeos magnéticos no salão com seu celular e use Inteligência Artificial para legendas automáticas, corte de ruído e alta retenção.
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap shrink-0">
+                  <a
+                    href="https://www.capcut.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-700 transition-all flex items-center gap-1.5 shadow-sm"
+                  >
+                    <span>Abrir CapCut IA</span>
+                    <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  </a>
+                  <a
+                    href="https://www.opus.pro"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest transition-all flex items-center gap-1.5 shadow-sm"
+                  >
+                    <span>Opus Clip (Cortes IA)</span>
+                    <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Banner de Impacto dos Vídeos */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-purple-600 text-2xl">movie_filter</span>
+                  <div>
+                    <h4 className="text-xs font-bold text-purple-950">Por que o Vídeo é o Formato de Maior Conversão para Salões?</h4>
+                    <p className="text-[11px] text-purple-900 leading-relaxed mt-0.5">
+                      No Instagram Reels e TikTok, vídeos verticais entregam até <strong>4x mais alcance orgânico</strong> do que fotos estáticas. As clientes compram <em>transformação e movimento</em>. Com ferramentas gratuitas de IA, você não precisa ser editor profissional para criar vídeos cinematográficos em menos de 5 minutos!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Grade de 3 Pilares: Pura Vitrine + Ferramentas IA + Fórmula de Gravação */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed text-on-surface-variant">
+                {/* Pilar 1: O que o Pura Vitrine faz */}
+                <div className="flex flex-col gap-2.5 p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-purple-600 text-lg">psychology</span>
+                    <strong className="text-on-surface text-sm">1. IA do Pura Vitrine (Roteiro)</strong>
+                  </div>
+                  <ul className="list-disc pl-4 space-y-1.5 text-on-surface-variant text-[11px]">
+                    <li><strong>Roteiro Cronometrado (0s a 30s)</strong>: A IA cria a cena visual exata e a fala do profissional para cada segundo do vídeo.</li>
+                    <li><strong>Gancho Viral de 3 Segundos</strong>: Frases magnéticas geradas pelo Gemini para prender a rolagem nos primeiros segundos.</li>
+                    <li><strong>Sugestão de Áudio em Alta</strong>: Indica o estilo de música e o momento do <em>drop da batida</em> para a revelação.</li>
+                    <li><strong>Upload de Vídeos (.mp4 / .mov)</strong>: Guarde e organize todos os vídeos de procedimentos na Biblioteca de Mídia para agendamento.</li>
+                  </ul>
+                </div>
+
+                {/* Pilar 2: Como Editar com IA (Ferramentas) */}
+                <div className="flex flex-col gap-2.5 p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-purple-600 text-lg">auto_fix_high</span>
+                    <strong className="text-on-surface text-sm">2. Como Editar com IA Grátis</strong>
+                  </div>
+                  <ul className="list-disc pl-4 space-y-1.5 text-on-surface-variant text-[11px]">
+                    <li>
+                      <strong>CapCut (Legendas com IA)</strong>: Com 1 toque em <em>&ldquo;Legendas Automáticas&rdquo;</em>, a IA transcreve sua voz com letras dinâmicas e coloridas (mais de 70% assistem sem som no feed!).
+                    </li>
+                    <li>
+                      <strong>CapCut (Redutor de Ruído IA)</strong>: Remove com 1 clique o barulho de secadores e conversas ao fundo, deixando a voz nítida.
+                    </li>
+                    <li>
+                      <strong>CapCut (Aprimoramento de Imagem IA)</strong>: Aumenta a nitidez HD e realça o brilho e os reflexos dos fios de cabelo.
+                    </li>
+                    <li>
+                      <strong>Opus Clip</strong>: Se você filmou um procedimento longo de 10 min, a IA corta automaticamente em 3 a 5 Reels verticais prontos.
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Pilar 3: A Regra dos 3 Clipes (Gravação no Salão) */}
+                <div className="flex flex-col gap-2.5 p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-purple-600 text-lg">videocam</span>
+                    <strong className="text-on-surface text-sm">3. Regra de Ouro: Grave em 2 Min</strong>
+                  </div>
+                  <p className="text-[11px]">Grave apenas 3 momentos no celular na vertical <strong>9:16</strong> com Ring Light:</p>
+                  <ol className="list-decimal pl-4 space-y-1 text-on-surface-variant text-[11px]">
+                    <li><strong>O Antes (2 a 3s)</strong>: Close no cabelo antes do procedimento ou cliente olhando surpresa.</li>
+                    <li><strong>O Processo (5 a 8s)</strong>: Aplicação de produto na bancada, lavatório relaxante ou água correndo.</li>
+                    <li><strong>A Revelação (5 a 8s)</strong>: Em <em>Câmera Lenta (Slow Motion)</em>, cliente sorrindo e balanço dos fios ao vento.</li>
+                  </ol>
+                  <div className="p-2 rounded-lg bg-surface border border-outline-variant/20 text-[10px] text-on-surface-variant mt-1">
+                    💡 <strong>Dica Pro</strong>: Junte os 3 clipes no CapCut, aplique a legenda IA e suba no Pura Vitrine para agendar com a legenda já pronta!
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SEÇÃO 4: PINTEREST BUSINESS */}
             <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/15">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                    3
+                    4
                   </div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -791,12 +916,12 @@ export default function GuiaPage() {
               </div>
             </div>
 
-            {/* SEÇÃO 4: GOOGLE MEU NEGÓCIO */}
+            {/* SEÇÃO 5: GOOGLE MEU NEGÓCIO */}
             <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/15">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                    4
+                    5
                   </div>
                   <div>
                     <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold flex items-center gap-2">
@@ -843,12 +968,12 @@ export default function GuiaPage() {
               </div>
             </div>
 
-            {/* SEÇÃO 5: META BUSINESS SUITE & ADS */}
+            {/* SEÇÃO 6: META BUSINESS SUITE & ADS */}
             <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/15">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                    5
+                    6
                   </div>
                   <div>
                     <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold flex items-center gap-2">
@@ -894,11 +1019,11 @@ export default function GuiaPage() {
               </div>
             </div>
 
-            {/* SEÇÃO 6: CHECKLIST DE VARIÁVEIS NA VERCEL */}
+            {/* SEÇÃO 7: CHECKLIST DE VARIÁVEIS NA VERCEL */}
             <div className="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-outline-variant/15 flex flex-col gap-4">
               <div className="flex items-center gap-3 pb-3 border-b border-outline-variant/15">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center font-bold text-base shadow-sm">
-                  6
+                  7
                 </div>
                 <div>
                   <h3 className="font-headline-sm text-headline-sm text-on-surface text-lg font-bold">

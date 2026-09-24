@@ -36,6 +36,7 @@ export default function MediaPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showVideoGuide, setShowVideoGuide] = useState(false);
   const [filter, setFilter] = useState<'all' | 'image' | 'video'>('all');
   const [search, setSearch] = useState('');
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
@@ -131,16 +132,25 @@ export default function MediaPage() {
         <div>
           <h1 className="page-title">Biblioteca de Mídia</h1>
           <p className="page-description">
-            {media.length} {media.length === 1 ? 'arquivo' : 'arquivos'}
+            Fotos e vídeos de procedimentos do salão • {media.length} {media.length === 1 ? 'arquivo' : 'arquivos'}
           </p>
         </div>
-        <div className="page-actions">
+        <div className="page-actions flex items-center gap-2">
           <button
-            className="btn btn-primary"
+            type="button"
+            className={`btn btn-sm ${showVideoGuide ? 'btn-primary' : 'btn-outline'} flex items-center gap-1.5 text-xs`}
+            onClick={() => setShowVideoGuide(!showVideoGuide)}
+          >
+            <Sparkles size={14} className="text-accent-dark" />
+            <span>{showVideoGuide ? 'Fechar Guia' : 'Como Usar Vídeos & Editar com IA'}</span>
+          </button>
+
+          <button
+            className="btn btn-primary btn-sm flex items-center gap-1.5"
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload size={16} />
-            Upload
+            <Upload size={15} />
+            <span>Upload</span>
           </button>
           <input
             ref={fileInputRef}
@@ -152,6 +162,63 @@ export default function MediaPage() {
           />
         </div>
       </div>
+
+      {/* Guia de Vídeos e Edição com IA (Card Expansível) */}
+      {showVideoGuide && (
+        <div className="card p-5 border border-primary/20 bg-gradient-to-br from-surface to-primary-50/40 rounded-2xl animate-fade-in shadow-sm">
+          <div className="flex items-start justify-between gap-3 pb-3 border-b border-border-light">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                <Video size={18} />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-text flex items-center gap-2">
+                  Guia Prático: Como Usar Vídeos &amp; Editar com IA no Salão
+                </h3>
+                <p className="text-xs text-text-secondary">
+                  Vídeos curtos (Reels e TikTok) entregam até 4x mais clientes do que fotos. Veja o fluxo simples:
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="text-text-tertiary hover:text-text p-1 cursor-pointer"
+              onClick={() => setShowVideoGuide(false)}
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 text-xs leading-relaxed">
+            <div className="p-3.5 rounded-xl bg-surface border border-border-light flex flex-col gap-1.5">
+              <span className="font-bold text-primary flex items-center gap-1.5 text-xs">
+                🎬 1. Suporte Nativo no Pura Vitrine
+              </span>
+              <p className="text-text-secondary text-[11px]">
+                Você pode fazer upload de vídeos <strong>.MP4, .MOV e .WEBM (até 50MB)</strong>. Na aba <strong>Inteligência Artificial &rarr; Tendências TikTok</strong>, o Gemini gera roteiros cronometrados com ganchos de 3s e sugestão de áudio!
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-surface border border-border-light flex flex-col gap-1.5">
+              <span className="font-bold text-primary flex items-center gap-1.5 text-xs">
+                ✨ 2. Edição com IA no CapCut (Grátis)
+              </span>
+              <p className="text-text-secondary text-[11px]">
+                Abra seu vídeo no <strong>CapCut</strong> e use <em>Legendas Automáticas IA</em> (70% das pessoas assistem sem som!) e <em>Redutor de Ruído IA</em> para eliminar o barulho de secadores ao fundo.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-surface border border-border-light flex flex-col gap-1.5">
+              <span className="font-bold text-primary flex items-center gap-1.5 text-xs">
+                📱 3. A Regra dos 3 Clipes (2 min)
+              </span>
+              <p className="text-text-secondary text-[11px]">
+                Grave apenas 3 momentos no celular em <strong>9:16 vertical</strong>: 1) O Antes (2s), 2) O Processo no lavatório/bancada (6s), 3) A Revelação em câmera lenta (5s). Junte no CapCut e suba aqui!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters Bar */}
       <div className="media-filters">
@@ -169,7 +236,7 @@ export default function MediaPage() {
           {[
             { value: 'all' as const, label: 'Todos', icon: Filter },
             { value: 'image' as const, label: 'Imagens', icon: ImageIcon },
-            { value: 'video' as const, label: 'Vídeos', icon: Video },
+            { value: 'video' as const, label: 'Vídeos (Reels / TikTok)', icon: Video },
           ].map((f) => {
             const Icon = f.icon;
             return (
@@ -206,7 +273,7 @@ export default function MediaPage() {
           <>
             <CloudUpload size={32} strokeWidth={1.5} />
             <p><strong>Arraste e solte</strong> seus arquivos aqui</p>
-            <span>ou clique para selecionar • JPG, PNG, MP4 • até 50MB</span>
+            <span>ou clique para selecionar • JPG, PNG, MP4, MOV • até 50MB</span>
           </>
         )}
       </div>
