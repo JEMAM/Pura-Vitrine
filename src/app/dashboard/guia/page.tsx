@@ -479,26 +479,250 @@ export default function GuiaPage() {
                   </div>
                 </div>
 
-                {/* Ferramenta 4: Multicanal */}
-                <div className="bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/15 shadow-xs space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="p-2.5 bg-amber-50 text-amber-700 rounded-xl">
-                      <span className="material-symbols-outlined text-2xl">share</span>
+                {/* Ferramenta 4: Multicanal (Expandida - Como, Quando e Por que Usar) */}
+                <div className="bg-surface-container-lowest p-6 rounded-3xl border border-primary/25 shadow-sm space-y-5 md:col-span-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/40">
+                    <div className="flex items-center gap-3">
+                      <span className="p-3 bg-gradient-to-tr from-amber-500/20 to-primary/20 text-primary rounded-2xl">
+                        <span className="material-symbols-outlined text-2xl">hub</span>
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-on-surface text-lg">
+                            4. Expansão Multicanal (Pinterest, Google Meu Negócio, Meta Ads e Stories)
+                          </h4>
+                          <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            Presença 360°
+                          </span>
+                        </div>
+                        <p className="text-xs text-on-surface-variant mt-0.5">
+                          Guia definitivo: Como, Quando e Por que usar cada um dos 4 canais de atração de clientes
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/dashboard/ai"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-xs font-semibold transition-all self-start sm:self-auto"
+                    >
+                      <span className="material-symbols-outlined text-sm">open_in_new</span>
+                      <span>Testar na BelezaIA</span>
+                    </Link>
+                  </div>
+
+                  {/* Como preencher os campos superiores da tela */}
+                  <div className="bg-surface-container-low p-4 rounded-2xl border border-border/40 space-y-3">
+                    <span className="text-xs font-bold text-on-surface uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-base text-primary">tune</span>
+                      Como preencher os 4 campos no topo da tela:
                     </span>
-                    <div>
-                      <h4 className="font-bold text-on-surface text-base">4. Multicanal (Google, Pinterest e Stories)</h4>
-                      <p className="text-xs text-amber-700 font-medium">Atraia clientes de todos os cantos da internet</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                      <div className="p-3 bg-surface rounded-xl border border-border/50 space-y-1">
+                        <strong className="text-primary block">1. Procedimento / Foco</strong>
+                        <p className="text-[11px] text-on-surface-variant">
+                          O serviço específico que você quer promover. Ex: <em>Morena Iluminada Mel</em>, <em>Unhas em Fibra</em> ou <em>Spa Facial</em>.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-surface rounded-xl border border-border/50 space-y-1">
+                        <strong className="text-primary block">2. Categoria do Serviço</strong>
+                        <p className="text-[11px] text-on-surface-variant">
+                          Selecione se é Mechas, Tratamento Capilar, Corte, Noivas, Unhas ou Estética para direcionar o vocabulário.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-surface rounded-xl border border-border/50 space-y-1">
+                        <strong className="text-primary block">3. Bairro / Cidade</strong>
+                        <p className="text-[11px] text-on-surface-variant">
+                          Sua localização exata (ex: <em>Barão Geraldo • Campinas</em>). A IA usa isso para atrair quem mora ou trabalha perto de você.
+                        </p>
+                      </div>
+                      <div className="p-3 bg-surface rounded-xl border border-border/50 space-y-1">
+                        <strong className="text-primary block">4. Oferta / Diferencial</strong>
+                        <p className="text-[11px] text-on-surface-variant">
+                          Um atrativo opcional para acelerar agendamentos. Ex: <em>Diagnóstico capilar gratuito</em> ou <em>15% OFF na 1ª visita</em>.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-xs text-on-surface-variant leading-relaxed">
-                    Você não vive só de Instagram! A BelezaIA cria conteúdos sob medida para outros locais onde clientes ricas procuram salão:
-                  </p>
-                  <div className="bg-surface-container-low p-3 rounded-xl text-xs space-y-1 text-on-surface">
-                    <ul className="list-disc list-inside text-on-surface-variant space-y-1 text-[11px]">
-                      <li><strong>Google Meu Negócio:</strong> Textos com palavras-chave da sua cidade para você aparecer em 1º quando alguém buscar salão no mapa.</li>
-                      <li><strong>Pinterest:</strong> Títulos magnéticos para pastas de inspiração de noivas e madrinhas.</li>
-                      <li><strong>Roteiro de Stories:</strong> Enquetes e perguntas prontas para fazer suas seguidoras responderem.</li>
-                    </ul>
+
+                  {/* Os 4 Canais Detalhados: Como, Quando e Por que Usar */}
+                  <div className="space-y-4">
+                    <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block">
+                      Guia Canal por Canal (Escolha o botão correspondente no topo da tela):
+                    </span>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* CANAL 1: PINTEREST 2:3 */}
+                      <div className="p-5 rounded-2xl bg-surface-container-low border border-rose-200/50 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="p-2 bg-rose-500/10 text-rose-600 rounded-xl font-bold text-sm">
+                                📌
+                              </span>
+                              <h5 className="font-bold text-on-surface text-sm">
+                                Canal 1: Pinterest 2:3 (Desejo Visual &amp; Busca Contínua)
+                              </h5>
+                            </div>
+                            <span className="text-[10px] bg-rose-100 text-rose-800 font-semibold px-2 py-0.5 rounded-full">
+                              Longo Prazo
+                            </span>
+                          </div>
+
+                          <div className="space-y-2 text-xs text-on-surface-variant leading-relaxed pt-1">
+                            <p>
+                              <strong>• Por que usar?</strong> No Instagram, um post perde força em 24h. No Pinterest, ele funciona como um buscador no Google: mulheres que vão casar, ser madrinhas ou mudar o visual pesquisam referências meses antes. Seu Pin de mechas continua sendo visto e gerando pedidos por 6 a 12 meses direto!
+                            </p>
+                            <p>
+                              <strong>• Quando usar?</strong> Sempre que você fizer fotos lindas de transformações (mechas loiras, morena iluminada, corte repicado, nail arts elegantes e penteados de festa).
+                            </p>
+                            <p>
+                              <strong>• Como usar no dia a dia?</strong> Clique no botão <em>Pinterest 2:3</em> e clique em <em>Gerar</em>. A IA cria:
+                            </p>
+                            <ul className="list-disc list-inside text-[11px] text-on-surface space-y-0.5 pl-1">
+                              <li>O <strong>Texto para estampar na foto</strong> (ex: <em>&quot;A tendência mais pedida do outono&quot;</em>).</li>
+                              <li>O <strong>Título Otimizado</strong> com as palavras que as mulheres mais buscam.</li>
+                              <li>A <strong>Pasta sugerida</strong> (ex: <em>Cabelos dos Sonhos</em>) e hashtags.</li>
+                              <li>Basta copiar, colocar a foto vertical 2:3 no Pinterest e salvar com o link do seu WhatsApp ou perfil!</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CANAL 2: GOOGLE MEU NEGÓCIO */}
+                      <div className="p-5 rounded-2xl bg-surface-container-low border border-blue-200/50 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="p-2 bg-blue-600/10 text-blue-600 rounded-xl font-bold text-sm">
+                                📍
+                              </span>
+                              <h5 className="font-bold text-on-surface text-sm">
+                                Canal 2: Google Meu Negócio / Maps (Compra Imediata)
+                              </h5>
+                            </div>
+                            <span className="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">
+                              Clientes Prontas
+                            </span>
+                          </div>
+
+                          <div className="space-y-2 text-xs text-on-surface-variant leading-relaxed pt-1">
+                            <p>
+                              <strong>• Por que usar?</strong> Quem pesquisa <em>&quot;salão de beleza perto de mim&quot;</em>, <em>&quot;manicure em Barão Geraldo&quot;</em> ou <em>&quot;especialista em loiras&quot;</em> no Google já está com a intenção clara de agendar hoje ou amanhã! O salão que mantém o perfil atualizado aparece entre os 3 primeiros do mapa (o cobiçado Top 3 do Google Maps).
+                            </p>
+                            <p>
+                              <strong>• Quando usar?</strong> Toda semana! Escolha um dia fixo (segunda ou terça-feira) para colocar uma nova atualização no Google Perfil da Empresa.
+                            </p>
+                            <p>
+                              <strong>• Como usar no dia a dia?</strong> Clique no botão <em>Google Meu Negócio</em> e clique em <em>Gerar</em>. A IA entrega:
+                            </p>
+                            <ul className="list-disc list-inside text-[11px] text-on-surface space-y-0.5 pl-1">
+                              <li>Texto direto e persuasivo com palavras-chave locais da sua cidade.</li>
+                              <li>O botão de ação exato (CTA: <em>&quot;Agendar Horário&quot;</em> ou <em>&quot;Saiba Mais&quot;</em>).</li>
+                              <li>Dica do tipo de foto ideal para subir no Google.</li>
+                              <li>Copie o texto, abra o Google Perfil da Empresa, clique em <em>&quot;Adicionar Atualização&quot;</em> e publique em 30 segundos!</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CANAL 3: META ADS LOCAL (DESTAQUE NO PRINT) */}
+                      <div className="p-5 rounded-2xl bg-surface-container-low border border-indigo-200/60 space-y-3 flex flex-col justify-between lg:col-span-2">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="p-2 bg-indigo-600/10 text-indigo-600 rounded-xl font-bold text-sm">
+                                🎯
+                              </span>
+                              <h5 className="font-bold text-on-surface text-base">
+                                Canal 3: Meta Ads Local (Instagram &amp; Facebook Ads Patrocinados)
+                              </h5>
+                            </div>
+                            <span className="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-full uppercase">
+                              Mais Rápido para Encher a Agenda
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-on-surface-variant pt-2">
+                            <div className="p-3.5 bg-surface rounded-xl border border-indigo-100 space-y-1">
+                              <strong className="text-indigo-900 block font-semibold text-xs">
+                                💡 Por que usar?
+                              </strong>
+                              <p className="text-[11px] leading-relaxed">
+                                Quando você posta sem pagar, o Instagram mostra seu post para apenas 5% a 8% dos seus seguidores. Com o Meta Ads Local, você faz o Instagram colocar seu melhor trabalho na tela de <strong>mulheres qualificadas que moram exatamente a 3km a 5km do seu salão</strong>, mesmo que elas nunca tenham ouvido falar de você antes!
+                              </p>
+                            </div>
+
+                            <div className="p-3.5 bg-surface rounded-xl border border-indigo-100 space-y-1">
+                              <strong className="text-indigo-900 block font-semibold text-xs">
+                                🗓️ Quando usar?
+                              </strong>
+                              <p className="text-[11px] leading-relaxed">
+                                Use quando quiser preencher horários livres de terça a quinta-feira, ao lançar um serviço novo (como cronograma capilar de inverno ou hidragloss), para divulgar uma nova profissional que acabou de entrar na equipe ou para acelerar o faturamento no início do mês.
+                              </p>
+                            </div>
+
+                            <div className="p-3.5 bg-surface rounded-xl border border-indigo-100 space-y-1">
+                              <strong className="text-indigo-900 block font-semibold text-xs">
+                                🚀 Como usar passo a passo?
+                              </strong>
+                              <p className="text-[11px] leading-relaxed">
+                                Clique na sub-aba <strong>Meta Ads Local</strong> e clique em <em>Gerar Campanha</em>. A BelezaIA entrega tudo pronto: a frase de impacto (Headline), o texto que vende, a idade certa (24 a 52 anos), os interesses de beleza e a sugestão de orçamento diário (R$ 15 a R$ 25/dia).
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="p-3 bg-indigo-50/70 rounded-xl text-xs text-indigo-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border border-indigo-200/50 mt-2">
+                            <span>
+                              👉 <strong>Dica Prática:</strong> Pegue os dados gerados pela IA, abra o Instagram no celular, toque em <em>&quot;Turbinar Publicação&quot;</em> no post do procedimento, cole a segmentação de raio (3km a 5km em torno do salão) e direcione as mensagens para o WhatsApp!
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CANAL 4: STORIES INTERATIVOS */}
+                      <div className="p-5 rounded-2xl bg-surface-container-low border border-amber-200/50 space-y-3 flex flex-col justify-between lg:col-span-2">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="p-2 bg-amber-500/10 text-amber-700 rounded-xl font-bold text-sm">
+                                📱
+                              </span>
+                              <h5 className="font-bold text-on-surface text-sm">
+                                Canal 4: Stories Interativos (Enquetes, Caixas de Perguntas e Quizzes)
+                              </h5>
+                            </div>
+                            <span className="text-[10px] bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-full">
+                              Esquentar o Direct
+                            </span>
+                          </div>
+
+                          <div className="space-y-2 text-xs text-on-surface-variant leading-relaxed pt-1">
+                            <p>
+                              <strong>• Por que usar?</strong> Postar só foto parada de antes e depois nos Stories faz as seguidoras passarem rápido. O algoritmo do Instagram ama quando alguém toca na tela para votar em uma enquete ou responder uma caixinha. Isso faz o Instagram colocar seu Story na primeira bolinha da tela de todo mundo!
+                            </p>
+                            <p>
+                              <strong>• Quando usar?</strong> De 3 a 5 vezes por semana (pela manhã às 08h30 ou no final do dia às 18h).
+                            </p>
+                            <p>
+                              <strong>• Como usar no dia a dia?</strong> Clique no botão <em>Stories Interativos</em> e clique em <em>Gerar</em>. A IA cria 3 tipos de postagens prontas:
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                              <div className="p-3 bg-surface rounded-xl border border-border/40 text-[11px] space-y-1">
+                                <strong className="text-amber-800 block font-semibold">1. Enquete A/B:</strong>
+                                <p className="text-on-surface-variant">Uma votação rápida que todo mundo gosta de opinar (ex: <em>&quot;Você prefere Morena Iluminada Avelã ou Caramelo?&quot;</em>).</p>
+                              </div>
+                              <div className="p-3 bg-surface rounded-xl border border-border/40 text-[11px] space-y-1">
+                                <strong className="text-amber-800 block font-semibold">2. Caixinha de Perguntas:</strong>
+                                <p className="text-on-surface-variant">A pergunta certa para fazer a seguidora desabafar sobre o cabelo dela e chamar no Direct.</p>
+                              </div>
+                              <div className="p-3 bg-surface rounded-xl border border-border/40 text-[11px] space-y-1">
+                                <strong className="text-amber-800 block font-semibold">3. Quiz Mito ou Verdade:</strong>
+                                <p className="text-on-surface-variant">Um teste rápido e educativo (ex: <em>&quot;Lavar o cabelo todo dia apodrece a raiz? Mito ou Verdade?&quot;</em>).</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
