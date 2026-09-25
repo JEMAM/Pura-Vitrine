@@ -13,6 +13,7 @@ interface UserSession {
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/dashboard/clients', label: 'Clientes & Agenda', icon: 'cake', badge: 'IA' },
   { href: '/dashboard/media', label: 'Biblioteca de Mídia', icon: 'photo_library' },
   { href: '/dashboard/posts', label: 'Editor de Post', icon: 'auto_awesome', badge: 'PRO' },
   { href: '/dashboard/calendar', label: 'Calendário Editorial', icon: 'calendar_today' },

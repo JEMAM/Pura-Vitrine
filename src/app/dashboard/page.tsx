@@ -136,6 +136,15 @@ export default function DashboardPage() {
               </Link>
 
               <Link
+                href="/dashboard/clients"
+                className="flex items-center gap-2 px-space-sm py-3 rounded-xl bg-surface-container-lowest text-on-surface hover:bg-surface-variant font-title-md text-title-md shadow-sm transition-all"
+                title="Agenda de Aniversários & Clientes"
+              >
+                <span className="material-symbols-outlined text-primary text-xl">cake</span>
+                <span className="hidden sm:inline">Aniversários IA</span>
+              </Link>
+
+              <Link
                 href="/dashboard/media"
                 className="flex items-center justify-center w-12 h-12 rounded-xl bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-variant shadow-sm transition-colors"
                 title="Upload de Fotos do Salão"

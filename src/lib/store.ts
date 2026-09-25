@@ -52,6 +52,22 @@ export interface StoredPost {
   postMedia: StoredPostMedia[];
 }
 
+export interface StoredClient {
+  id: string;
+  userId: string;
+  name: string;
+  phone: string;
+  email?: string;
+  birthDay: number;
+  birthMonth: number;
+  birthYear?: number;
+  instagram?: string;
+  preferredServices?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface SalonSettings {
   salonName: string;
   phone: string;
@@ -222,6 +238,129 @@ const defaultPosts: StoredPost[] = [
   },
 ];
 
+const defaultClients: StoredClient[] = [
+  {
+    id: 'client-1',
+    userId: 'admin-demo-id',
+    name: 'Mariana Silveira',
+    phone: '(11) 99876-5432',
+    email: 'mariana.silveira@email.com',
+    birthDay: 25,
+    birthMonth: 9,
+    birthYear: 1993,
+    instagram: '@mari.silveira',
+    preferredServices: 'Morena Iluminada, Cronograma Capilar, Escova Modelada',
+    notes: 'Ama café sem açúcar. Prefere mechas em tons de avelã e caramelo. Adora mimos.',
+    createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-2',
+    userId: 'admin-demo-id',
+    name: 'Carolina Mendes Prado',
+    phone: '(11) 98765-4321',
+    email: 'carol.mendes@email.com',
+    birthDay: 26,
+    birthMonth: 9,
+    birthYear: 1989,
+    instagram: '@carolpradomendes',
+    preferredServices: 'Unhas em Gel, Nail Art Francesinha, Spa dos Pés',
+    notes: 'Gosta de cuticulagem bem delicada. Sempre faz manutenção a cada 20 dias.',
+    createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-3',
+    userId: 'admin-demo-id',
+    name: 'Beatriz Vasconcelos',
+    phone: '(11) 97654-3210',
+    email: 'bia.vasconcelos@email.com',
+    birthDay: 28,
+    birthMonth: 9,
+    birthYear: 1996,
+    instagram: '@biavasconcelos',
+    preferredServices: 'Loiro Champagne, Matização, Tratamento Olaplex',
+    notes: 'Sensibilidade leve no couro cabeludo, usar protetor capilar antes da descoloração.',
+    createdAt: new Date(Date.now() - 86400000 * 15).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-4',
+    userId: 'admin-demo-id',
+    name: 'Fernanda Albuquerque',
+    phone: '(11) 96543-2109',
+    email: 'fernanda.albuquerque@email.com',
+    birthDay: 5,
+    birthMonth: 10,
+    birthYear: 1985,
+    instagram: '@fer.albuquerque',
+    preferredServices: 'Corte Bordado, Escova Orgânica, Design de Sobrancelhas',
+    notes: 'Executiva, prefere horários no final da tarde ou aos sábados pela manhã.',
+    createdAt: new Date(Date.now() - 86400000 * 12).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-5',
+    userId: 'admin-demo-id',
+    name: 'Larissa Duarte',
+    phone: '(11) 95432-1098',
+    email: 'larissa.duarte@email.com',
+    birthDay: 12,
+    birthMonth: 10,
+    birthYear: 1998,
+    instagram: '@lari_duarte',
+    preferredServices: 'Alongamento Fibra de Vidro, Esmaltação em Gel',
+    notes: 'Ama tons nude e glitter sutil. Traz referências do Pinterest.',
+    createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-6',
+    userId: 'admin-demo-id',
+    name: 'Juliana Castro',
+    phone: '(11) 94321-0987',
+    email: 'juliana.castro@email.com',
+    birthDay: 18,
+    birthMonth: 10,
+    birthYear: 1991,
+    instagram: '@ju.castro',
+    preferredServices: 'Limpeza de Pele Profunda, Peeling de Diamante, Hidragloss',
+    notes: 'Pele mista. Faz acompanhamento mensal de estética facial.',
+    createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-7',
+    userId: 'admin-demo-id',
+    name: 'Renata Faria Lima',
+    phone: '(11) 93210-9876',
+    email: 'renata.flima@email.com',
+    birthDay: 22,
+    birthMonth: 10,
+    birthYear: 1987,
+    instagram: '@renataflima',
+    preferredServices: 'Lifting de Cílios, Micropigmentação Shadow, Botox Capilar',
+    notes: 'Cliente VIP desde 2023. Sempre consome produtos da vitrine para home care.',
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'client-8',
+    userId: 'admin-demo-id',
+    name: 'Camila Guimarães',
+    phone: '(11) 92109-8765',
+    email: 'camila.guimaraes@email.com',
+    birthDay: 14,
+    birthMonth: 11,
+    birthYear: 1995,
+    instagram: '@camilaguimaraes',
+    preferredServices: 'Corte Long Bob, Tratamento Kérastase, Babyliss',
+    notes: 'Adora fotos de antes e depois para postar nos stories.',
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 let salonSettings: SalonSettings = {
   salonName: 'Studio Beleza & Elegância',
   phone: '(11) 98765-4321',
@@ -243,11 +382,13 @@ const globalStore = globalThis as unknown as {
   __demoMedia?: StoredMedia[];
   __demoPosts?: StoredPost[];
   __demoSettings?: SalonSettings;
+  __demoClients?: StoredClient[];
 };
 
 if (!globalStore.__demoMedia) globalStore.__demoMedia = defaultMedia;
 if (!globalStore.__demoPosts) globalStore.__demoPosts = defaultPosts;
 if (!globalStore.__demoSettings) globalStore.__demoSettings = salonSettings;
+if (!globalStore.__demoClients) globalStore.__demoClients = defaultClients;
 
 export const memoryStore = {
   getMedia: () => globalStore.__demoMedia!,
@@ -278,5 +419,21 @@ export const memoryStore = {
   updateSettings: (updates: Partial<SalonSettings>) => {
     Object.assign(globalStore.__demoSettings!, updates);
     return globalStore.__demoSettings!;
+  },
+  getClients: () => globalStore.__demoClients!,
+  addClient: (client: StoredClient) => {
+    globalStore.__demoClients!.unshift(client);
+    return client;
+  },
+  updateClient: (id: string, updates: Partial<StoredClient>) => {
+    const client = globalStore.__demoClients!.find((c) => c.id === id);
+    if (client) {
+      Object.assign(client, updates, { updatedAt: new Date().toISOString() });
+      return client;
+    }
+    return null;
+  },
+  deleteClient: (id: string) => {
+    globalStore.__demoClients = globalStore.__demoClients!.filter((c) => c.id !== id);
   },
 };
