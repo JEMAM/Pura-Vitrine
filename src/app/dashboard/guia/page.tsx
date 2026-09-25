@@ -17,19 +17,19 @@ export default function GuiaPage() {
 
   const faqs: FaqItem[] = [
     {
-      category: 'BelezaIA Assist (Para Leigos)',
+      category: 'BelezaIA Assist (Passo a Passo)',
       question: 'Eu nunca usei inteligência artificial antes. Vou conseguir usar o BelezaIA Assist?',
       answer:
         'Com certeza, 100%! O BelezaIA Assist foi desenhado para ser tão simples quanto conversar no WhatsApp. Você não precisa digitar comandos difíceis ou saber informática. Basta clicar no serviço feito (ex: Cabelo, Unhas ou Estética) e clicar no botão "Gerar". Em 3 segundos a IA entrega a legenda prontinha com emojis elegantes, hashtags que atraem clientes locais e a frase final convidando para agendar!',
     },
     {
-      category: 'BelezaIA Assist (Para Leigos)',
+      category: 'BelezaIA Assist (Passo a Passo)',
       question: 'O que o BelezaIA Assist faz exatamente para o meu salão?',
       answer:
         'Ele é como ter uma agência de marketing digital e uma redatora profissional trabalhando no seu salão 24 horas por dia. Ele: 1) Cria legendas para o Instagram e Facebook; 2) Dá ideias do que postar quando faltar criatividade; 3) Mostra quais músicas e vídeos estão bombando no TikTok; 4) Gera mensagens automáticas de feliz aniversário para suas clientes no WhatsApp com descontos/mimos; 5) Analisa se a foto do cabelo ou unha ficou bem iluminada antes de você postar; 6) Diz qual o melhor horário para publicar.',
     },
     {
-      category: 'BelezaIA Assist (Para Leigos)',
+      category: 'BelezaIA Assist (Passo a Passo)',
       question: 'As clientes vão perceber que foi uma IA que escreveu?',
       answer:
         'Não! Os textos são configurados com vocabulário acolhedor, caloroso e sofisticado, exatamente como uma cabeleireira ou manicure de alto padrão fala com suas clientes. Fica natural, charmoso e você pode editar qualquer palavra antes de postar se quiser.',
@@ -160,7 +160,7 @@ export default function GuiaPage() {
         <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-outline-variant/20 scrollbar-none">
           {[
             { id: 'inicio', label: 'Passo a Passo Rápido', icon: 'rocket_launch' },
-            { id: 'beleza-ia', label: 'BelezaIA Assist (Guia para Leigos)', icon: 'psychology', badge: 'NOVO' },
+            { id: 'beleza-ia', label: 'BelezaIA Assist (Passo a Passo)', icon: 'psychology', badge: 'NOVO' },
             { id: 'dashboard', label: 'Dashboard & Métricas', icon: 'insights' },
             { id: 'editor', label: 'Editor Inteligente & IA', icon: 'auto_awesome' },
             { id: 'trends', label: 'Tendências TikTok & Reels', icon: 'local_fire_department' },
@@ -281,7 +281,7 @@ export default function GuiaPage() {
           </div>
         )}
 
-        {/* Tab: BelezaIA Assist (Guia Completo para Leigos) */}
+        {/* Tab: BelezaIA Assist (Guia Prático Passo a Passo) */}
         {activeTab === 'beleza-ia' && (
           <div className="flex flex-col gap-space-lg animate-fadeIn">
             {/* Banner Descomplicado de Boas-Vindas */}
@@ -468,7 +468,7 @@ export default function GuiaPage() {
                     </div>
                   </div>
                   <p className="text-xs text-on-surface-variant leading-relaxed">
-                    <strong>O que é isso para um leigo?</strong> &quot;Trend&quot; é um assunto ou estilo de vídeo que está todo mundo assistindo agora no Brasil. Quando você posta algo no mesmo formato, o Instagram mostra seu vídeo para centenas de pessoas novas sem você pagar nada.
+                    <strong>O que é isso de forma simples?</strong> &quot;Trend&quot; é um assunto ou estilo de vídeo que está todo mundo assistindo agora no Brasil. Quando você posta algo no mesmo formato, o Instagram mostra seu vídeo para centenas de pessoas novas sem você pagar nada.
                   </p>
                   <div className="bg-surface-container-low p-3 rounded-xl text-xs space-y-1 text-on-surface">
                     <p className="font-semibold text-rose-700">🎬 Como usar o roteiro do TikTok:</p>
